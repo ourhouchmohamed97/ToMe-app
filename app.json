@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "ToMe - Your Private Journal",
+    "slug": "tome-private-journal",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./public/assets/icon.png",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#fcf9f3",
+    "splash": {
+      "image": "./public/assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#fcf9f3"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tome.privatejournal",
+      "infoPlist": {
+        "NSCameraUsageDescription": "ToMe requires camera access to capture moments for your private vault.",
+        "NSPhotoLibraryUsageDescription": "ToMe requires photo library access to attach memories to your journal entries.",
+        "NSMicrophoneUsageDescription": "ToMe requires microphone access to record whispered voice notes for your future self."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./public/assets/adaptive-icon.png",
+        "backgroundColor": "#fcf9f3"
+      },
+      "package": "com.tome.privatejournal",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./public/favicon.ico"
+    }
+  }
+}

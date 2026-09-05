@@ -1,0 +1,6 @@
+{
+  "name": "ToMe - Your Private Journal",
+  "description": "A quiet, contemplative private journal and time capsule for your present and future self.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
