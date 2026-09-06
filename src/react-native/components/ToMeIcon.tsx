@@ -73,6 +73,8 @@ export const ToMeIcon: React.FC<ToMeIconProps> = ({
 
   return (
     <Text
+      numberOfLines={1}
+      allowFontScaling={false}
       style={[
         styles.icon,
         {
