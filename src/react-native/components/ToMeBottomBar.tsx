@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS, SPACING, RADIUS } from '../styles/theme';
 import { ToMeIcon } from './ToMeIcon';
 import { ActiveTab } from '../../types';
@@ -10,8 +11,10 @@ interface ToMeBottomBarProps {
 }
 
 export const ToMeBottomBar: React.FC<ToMeBottomBarProps> = ({ activeTab, onSelectTab }) => {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={styles.floatingContainer}>
+    <View style={[styles.floatingContainer, { bottom: insets.bottom + 12 }]}>
       <View style={styles.bar}>
         <TouchableOpacity
           onPress={() => onSelectTab('today')}
@@ -86,7 +89,6 @@ export const ToMeBottomBar: React.FC<ToMeBottomBarProps> = ({ activeTab, onSelec
 const styles = StyleSheet.create({
   floatingContainer: {
     position: 'absolute',
-    bottom: 12,
     left: 0,
     right: 0,
     alignItems: 'center',

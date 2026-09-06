@@ -196,7 +196,12 @@ export const ToMeReactNativeApp: React.FC = () => {
         />
 
         {/* Current Active Screen */}
-        <View style={styles.screenContainer}>
+        <View
+          style={[
+            styles.screenContainer,
+            activeTab !== 'memory-detail' && { paddingBottom: 76 + insets.bottom },
+          ]}
+        >
           {activeTab === 'today' && todaySubView === 'chat' && (
             <TodayScreen
               messages={messages}
@@ -242,9 +247,7 @@ export const ToMeReactNativeApp: React.FC = () => {
 
         {/* React Native Bottom Bar */}
         {activeTab !== 'memory-detail' && (
-          <View style={{ paddingBottom: insets.bottom }}>
-            <ToMeBottomBar activeTab={activeTab} onSelectTab={setActiveTab} />
-          </View>
+          <ToMeBottomBar activeTab={activeTab} onSelectTab={setActiveTab} />
         )}
 
         {/* Photo Lightbox Modal */}

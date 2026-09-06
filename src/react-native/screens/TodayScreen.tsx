@@ -254,7 +254,10 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
             </TouchableOpacity>
           </View>
         ) : null}
+      </ScrollView>
 
+      {/* Fixed Composer Footer (above the floating tab bar) */}
+      <View style={styles.composerFooter}>
         {/* Voice recording banner */}
         {isRecordingVoice ? (
           <View style={styles.voiceBanner}>
@@ -268,7 +271,20 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
           </View>
         ) : null}
 
-        {/* Bottom Composer */}
+        {/* Attachment preview banner */}
+        {selectedPhoto ? (
+          <View style={styles.attachmentPreview}>
+            <Image source={{ uri: selectedPhoto }} style={styles.attachmentThumb} />
+            <Text style={styles.attachmentText} numberOfLines={1}>
+              Sunset snapshot ready to seal
+            </Text>
+            <TouchableOpacity onPress={() => setSelectedPhoto(null)}>
+              <ToMeIcon name="close" size={16} color={COLORS.onSurfaceVariant} />
+            </TouchableOpacity>
+          </View>
+        ) : null}
+
+        {/* Composer */}
         <View style={styles.composer}>
           <TouchableOpacity
             onPress={() => {
@@ -309,7 +325,7 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
             <ToMeIcon name="arrow_upward" size={16} color={COLORS.onSecondary} />
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };
@@ -322,7 +338,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: SPACING.md,
     paddingTop: SPACING.xs,
-    paddingBottom: 90,
+    paddingBottom: SPACING.md,
   },
   temporalHeader: {
     alignItems: 'center',
@@ -634,18 +650,22 @@ const styles = StyleSheet.create({
     color: COLORS.secondary,
     textDecorationLine: 'underline',
   },
+  composerFooter: {
+    backgroundColor: COLORS.surface,
+    paddingHorizontal: SPACING.md,
+    paddingTop: SPACING.xs,
+    paddingBottom: SPACING.xs,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: COLORS.surfaceContainerHighest,
+  },
   composer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.surfaceContainerLowest,
-    borderRadius: RADIUS.xl,
+    borderRadius: RADIUS.md,
     padding: 6,
     borderWidth: 1,
     borderColor: 'rgba(229, 226, 220, 0.9)',
-    shadowColor: '#463228',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
     gap: 6,
   },
   composerIconBtn: {
