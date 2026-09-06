@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Modal, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, Modal, TouchableOpacity, Image, Share } from 'react-native';
 import { COLORS } from './styles/theme';
+import { isWeb, readStorage, writeStorage, clearStorage } from './storage';
 import { ActiveTab, TodaySubView, ChatMessage, MemoryItem, ProfilePreferences } from '../types';
 import {
   INITIAL_CHAT_MESSAGES,
@@ -25,52 +26,35 @@ export const ToMeReactNativeApp: React.FC = () => {
   const [showExpoGuide, setShowExpoGuide] = useState(false);
 
   // Storage persistence
-  const [messages, setMessages] = useState<ChatMessage[]>(() => {
-    try {
-      const saved = localStorage.getItem('tome_rn_messages');
-      return saved ? JSON.parse(saved) : INITIAL_CHAT_MESSAGES;
-    } catch {
-      return INITIAL_CHAT_MESSAGES;
-    }
-  });
-
-  const [memories, setMemories] = useState<MemoryItem[]>(() => {
-    try {
-      const saved = localStorage.getItem('tome_rn_memories');
-      return saved ? JSON.parse(saved) : INITIAL_MEMORIES;
-    } catch {
-      return INITIAL_MEMORIES;
-    }
-  });
-
-  const [profile, setProfile] = useState<ProfilePreferences>(() => {
-    try {
-      const saved = localStorage.getItem('tome_rn_profile');
-      return saved ? JSON.parse(saved) : INITIAL_PROFILE;
-    } catch {
-      return INITIAL_PROFILE;
-    }
-  });
+  const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_CHAT_MESSAGES);
+  const [memories, setMemories] = useState<MemoryItem[]>(INITIAL_MEMORIES);
+  const [profile, setProfile] = useState<ProfilePreferences>(INITIAL_PROFILE);
 
   const [selectedMemory, setSelectedMemory] = useState<MemoryItem | null>(null);
   const [lightbox, setLightbox] = useState<{ url: string; caption?: string } | null>(null);
 
   useEffect(() => {
-    try {
-      localStorage.setItem('tome_rn_messages', JSON.stringify(messages));
-    } catch {}
+    readStorage('tome_rn_messages', INITIAL_CHAT_MESSAGES).then(setMessages);
+  }, []);
+
+  useEffect(() => {
+    readStorage('tome_rn_memories', INITIAL_MEMORIES).then(setMemories);
+  }, []);
+
+  useEffect(() => {
+    readStorage('tome_rn_profile', INITIAL_PROFILE).then(setProfile);
+  }, []);
+
+  useEffect(() => {
+    writeStorage('tome_rn_messages', messages);
   }, [messages]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem('tome_rn_memories', JSON.stringify(memories));
-    } catch {}
+    writeStorage('tome_rn_memories', memories);
   }, [memories]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem('tome_rn_profile', JSON.stringify(profile));
-    } catch {}
+    writeStorage('tome_rn_profile', profile);
   }, [profile]);
 
   const handleSendMessage = (text: string, photoUrl?: string, location?: string) => {
@@ -151,7 +135,7 @@ export const ToMeReactNativeApp: React.FC = () => {
     setActiveTab('memories');
   };
 
-  const handleExportData = () => {
+  const handleExportData = async () => {
     const exportPayload = {
       profile,
       memories,
@@ -159,6 +143,17 @@ export const ToMeReactNativeApp: React.FC = () => {
       platform: 'React Native (iOS & Android)',
       exportedAt: new Date().toISOString(),
     };
+
+    if (!isWeb) {
+      try {
+        await Share.share({
+          title: 'ToMe Vault Export',
+          message: JSON.stringify(exportPayload, null, 2),
+        });
+      } catch {}
+      return;
+    }
+
     const blob = new Blob([JSON.stringify(exportPayload, null, 2)], {
       type: 'application/json',
     });
@@ -174,11 +169,9 @@ export const ToMeReactNativeApp: React.FC = () => {
     setMessages(INITIAL_CHAT_MESSAGES);
     setMemories(INITIAL_MEMORIES);
     setProfile(INITIAL_PROFILE);
-    try {
-      localStorage.removeItem('tome_rn_messages');
-      localStorage.removeItem('tome_rn_memories');
-      localStorage.removeItem('tome_rn_profile');
-    } catch {}
+    clearStorage('tome_rn_messages');
+    clearStorage('tome_rn_memories');
+    clearStorage('tome_rn_profile');
   };
 
   const handleOpenPhotoLightbox = (url: string, caption?: string) => {

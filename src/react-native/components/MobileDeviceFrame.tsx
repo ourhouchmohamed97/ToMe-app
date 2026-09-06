@@ -16,6 +16,10 @@ export const MobileDeviceFrame: React.FC<MobileDeviceFrameProps> = ({
 }) => {
   const [deviceMode, setDeviceMode] = useState<DeviceMode>('ios');
 
+  if (Platform.OS !== 'web') {
+    return <View style={styles.nativeContainer}>{children}</View>;
+  }
+
   return (
     <View style={styles.outerContainer}>
       {/* Top Device Bar Controls */}
@@ -143,6 +147,11 @@ const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
     backgroundColor: '#ede9e2',
+  },
+  nativeContainer: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: COLORS.surface,
   },
   topControlBar: {
     flexDirection: 'row',
