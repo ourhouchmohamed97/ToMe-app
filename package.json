@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "main": "index.ts",
+  "main": "index.tsx",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
@@ -24,6 +24,7 @@
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
     "react-native": "0.86.3",
+    "react-native-safe-area-context": "5.4.0",
     "react-native-web": "^0.21.2",
     "vite": "^6.2.3"
   },

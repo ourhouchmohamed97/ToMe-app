@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Modal, TouchableOpacity, Image, Share } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from './styles/theme';
 import { isWeb, readStorage, writeStorage, clearStorage } from './storage';
 import { ActiveTab, TodaySubView, ChatMessage, MemoryItem, ProfilePreferences } from '../types';
@@ -178,9 +179,11 @@ export const ToMeReactNativeApp: React.FC = () => {
     setLightbox({ url, caption });
   };
 
+  const insets = useSafeAreaInsets();
+
   return (
     <MobileDeviceFrame onOpenExpoGuide={() => setShowExpoGuide(true)}>
-      <View style={styles.appShell}>
+      <SafeAreaView style={styles.appShell} edges={['top', 'bottom']}>
         {/* React Native Header */}
         <ToMeHeader
           activeTab={activeTab}
@@ -239,7 +242,9 @@ export const ToMeReactNativeApp: React.FC = () => {
 
         {/* React Native Bottom Bar */}
         {activeTab !== 'memory-detail' && (
-          <ToMeBottomBar activeTab={activeTab} onSelectTab={setActiveTab} />
+          <View style={{ paddingBottom: insets.bottom }}>
+            <ToMeBottomBar activeTab={activeTab} onSelectTab={setActiveTab} />
+          </View>
         )}
 
         {/* Photo Lightbox Modal */}
@@ -266,7 +271,7 @@ export const ToMeReactNativeApp: React.FC = () => {
           visible={showExpoGuide}
           onClose={() => setShowExpoGuide(false)}
         />
-      </View>
+      </SafeAreaView>
     </MobileDeviceFrame>
   );
 };
