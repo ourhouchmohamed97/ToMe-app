@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Platform, Modal } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS, SPACING, RADIUS } from '../styles/theme';
 import { ToMeIcon } from './ToMeIcon';
 import { ASSETS } from '../../data/mockData';
@@ -20,6 +21,15 @@ export const ToMeHeader: React.FC<ToMeHeaderProps> = ({
   onBackFromDetail,
   onToggleEveningCheckin,
 }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const insets = useSafeAreaInsets();
+
+  const menuItems: { tab: ActiveTab; label: string; icon: string }[] = [
+    { tab: 'today', label: 'Today', icon: 'auto_awesome' },
+    { tab: 'memories', label: 'Memories', icon: 'auto_stories' },
+    { tab: 'me', label: 'Me', icon: 'account_circle' },
+  ];
+
   const getSubTitle = () => {
     if (activeTab === 'today') {
       return todaySubView === 'evening' ? 'Evening Check-in' : 'Today';
@@ -31,8 +41,17 @@ export const ToMeHeader: React.FC<ToMeHeaderProps> = ({
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.leftSection}>
+    <>
+      <View style={styles.container}>
+        <View style={styles.leftSection}>
+        <TouchableOpacity
+          onPress={() => setMenuOpen(true)}
+          style={styles.burgerButton}
+          accessibilityLabel="Open navigation menu"
+        >
+          <ToMeIcon name="menu" size={22} color={COLORS.onSurface} />
+        </TouchableOpacity>
+
         {activeTab === 'memory-detail' ? (
           <TouchableOpacity
             onPress={onBackFromDetail}
@@ -91,7 +110,52 @@ export const ToMeHeader: React.FC<ToMeHeaderProps> = ({
         </TouchableOpacity>
       </View>
     </View>
-  );
+
+    {/* Navigation Menu */}
+    <Modal
+      visible={menuOpen}
+      transparent
+      animationType="fade"
+      onRequestClose={() => setMenuOpen(false)}
+    >
+      <View style={styles.menuRoot}>
+        <TouchableOpacity
+          style={styles.menuBackdrop}
+          activeOpacity={1}
+          onPress={() => setMenuOpen(false)}
+        />
+        <View style={[styles.menuPanel, { top: insets.top + 64 }]}>
+          {menuItems.map((item) => {
+            const isActive = activeTab === item.tab;
+            return (
+              <TouchableOpacity
+                key={item.tab}
+                style={styles.menuItem}
+                activeOpacity={0.7}
+                onPress={() => {
+                  setMenuOpen(false);
+                  onSelectTab(item.tab);
+                }}
+              >
+                <ToMeIcon
+                  name={item.icon}
+                  size={18}
+                  color={isActive ? COLORS.secondary : COLORS.onSurfaceVariant}
+                />
+                <Text style={[styles.menuItemText, isActive && styles.menuItemTextActive]}>
+                  {item.label}
+                </Text>
+                {isActive ? (
+                  <ToMeIcon name="check" size={16} color={COLORS.secondary} />
+                ) : null}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </View>
+    </Modal>
+  </>
+);
 };
 
 const styles = StyleSheet.create({
@@ -109,6 +173,57 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: SPACING.xs,
+  },
+  burgerButton: {
+    width: 36,
+    height: 36,
+    borderRadius: RADIUS.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  menuRoot: {
+    flex: 1,
+  },
+  menuBackdrop: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(28, 28, 24, 0.28)',
+  },
+  menuPanel: {
+    position: 'absolute',
+    left: SPACING.md,
+    width: 240,
+    backgroundColor: COLORS.surfaceContainerLowest,
+    borderRadius: RADIUS.lg,
+    padding: 6,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: COLORS.surfaceContainerHighest,
+    shadowColor: '#2b231d',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.14,
+    shadowRadius: 20,
+    elevation: 12,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.sm,
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: 11,
+    borderRadius: RADIUS.md,
+  },
+  menuItemText: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: '500',
+    color: COLORS.onSurface,
+  },
+  menuItemTextActive: {
+    color: COLORS.secondary,
+    fontWeight: '700',
   },
   backButton: {
     width: 36,

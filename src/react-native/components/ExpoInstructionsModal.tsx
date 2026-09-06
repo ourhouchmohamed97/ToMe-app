@@ -107,7 +107,7 @@ export const ExpoInstructionsModal: React.FC<ExpoInstructionsModalProps> = ({
               <View style={styles.bulletRow}>
                 <Text style={styles.bulletDot}>📂</Text>
                 <Text style={styles.bulletText}>
-                  <Text style={styles.boldText}>src/react-native/components/</Text>: ToMeHeader, ToMeBottomBar, ToMeIcon, MobileDeviceFrame
+                  <Text style={styles.boldText}>src/react-native/components/</Text>: ToMeHeader, ToMeIcon, MobileDeviceFrame
                 </Text>
               </View>
               <View style={styles.bulletRow}>

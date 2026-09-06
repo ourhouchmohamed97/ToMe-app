@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Modal, TouchableOpacity, Image, Share } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS } from './styles/theme';
 import { isWeb, readStorage, writeStorage, clearStorage } from './storage';
 import { ActiveTab, TodaySubView, ChatMessage, MemoryItem, ProfilePreferences } from '../types';
@@ -11,7 +11,6 @@ import {
   ASSETS,
 } from '../data/mockData';
 import { ToMeHeader } from './components/ToMeHeader';
-import { ToMeBottomBar } from './components/ToMeBottomBar';
 import { TodayScreen } from './screens/TodayScreen';
 import { EveningCheckinScreen } from './screens/EveningCheckinScreen';
 import { MemoriesScreen } from './screens/MemoriesScreen';
@@ -179,8 +178,6 @@ export const ToMeReactNativeApp: React.FC = () => {
     setLightbox({ url, caption });
   };
 
-  const insets = useSafeAreaInsets();
-
   return (
     <MobileDeviceFrame onOpenExpoGuide={() => setShowExpoGuide(true)}>
       <SafeAreaView style={styles.appShell} edges={['top', 'bottom']}>
@@ -196,12 +193,7 @@ export const ToMeReactNativeApp: React.FC = () => {
         />
 
         {/* Current Active Screen */}
-        <View
-          style={[
-            styles.screenContainer,
-            activeTab !== 'memory-detail' && { paddingBottom: 76 + insets.bottom },
-          ]}
-        >
+        <View style={styles.screenContainer}>
           {activeTab === 'today' && todaySubView === 'chat' && (
             <TodayScreen
               messages={messages}
@@ -244,11 +236,6 @@ export const ToMeReactNativeApp: React.FC = () => {
             />
           )}
         </View>
-
-        {/* React Native Bottom Bar */}
-        {activeTab !== 'memory-detail' && (
-          <ToMeBottomBar activeTab={activeTab} onSelectTab={setActiveTab} />
-        )}
 
         {/* Photo Lightbox Modal */}
         {lightbox && (
