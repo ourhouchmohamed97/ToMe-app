@@ -1,3 +1,6 @@
 node_modules
 
 .env
+
+.expo/dev/logs/
+.expo/devices.json
