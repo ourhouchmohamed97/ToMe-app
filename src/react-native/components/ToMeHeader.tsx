@@ -169,7 +169,7 @@ const createStyles = (colors: ThemeColors) =>
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: SPACING.md,
-    backgroundColor: 'rgba(252, 249, 243, 0.92)',
+    backgroundColor: colors.surface,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.surfaceContainerHighest,
   },

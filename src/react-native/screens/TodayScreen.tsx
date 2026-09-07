@@ -443,7 +443,7 @@ const createStyles = (colors: ThemeColors) =>
     alignItems: 'flex-end',
   },
   userBubble: {
-    backgroundColor: colors.primaryContainer,
+    backgroundColor: colors.inverseSurface,
     borderRadius: RADIUS.lg,
     borderTopRightRadius: 4,
     paddingHorizontal: SPACING.md,
