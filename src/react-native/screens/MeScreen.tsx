@@ -489,9 +489,10 @@ export const MeScreen: React.FC<MeScreenProps> = ({
           <View style={styles.modalBackdrop}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Erase Entire Journal?</Text>
-              <Text style={styles.modalSubtitle}>
-                This will permanently delete all 47 memories, photos, and time capsules stored in your vault.
-              </Text>
+<Text style={styles.modalSubtitle}>
+  This will permanently delete your journal — {profile.memoriesSavedCount} memories
+  and {profile.photosKeptCount} photos stored in your vault.
+</Text>
               <View style={styles.modalActionRow}>
                 <TouchableOpacity
                   onPress={() => setShowEraseModal(false)}
@@ -543,14 +544,15 @@ export const MeScreen: React.FC<MeScreenProps> = ({
           </View>
         </Modal>
 
-        {/* Toast Feedback */}
-        {toastText && (
-          <View style={styles.toast}>
-            <ToMeIcon name="check_circle" size={16} color={colors.secondaryFixed} />
-            <Text style={styles.toastText}>{toastText}</Text>
-          </View>
-        )}
-      </ScrollView>
+        </ScrollView>
+
+      {/* Toast Feedback */}
+      {toastText && (
+        <View style={styles.toast}>
+          <ToMeIcon name="check_circle" size={16} color={colors.secondaryFixed} />
+          <Text style={styles.toastText}>{toastText}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -848,7 +850,9 @@ const createStyles = (colors: ThemeColors) =>
   },
   toast: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 28,
+    left: 24,
+    right: 24,
     alignSelf: 'center',
     backgroundColor: colors.inverseSurface,
     paddingHorizontal: 16,
@@ -856,7 +860,12 @@ const createStyles = (colors: ThemeColors) =>
     borderRadius: RADIUS.full,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
   },
   toastText: {
     fontSize: 13,

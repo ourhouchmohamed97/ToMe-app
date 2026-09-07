@@ -336,7 +336,7 @@ const createStyles = (colors: ThemeColors) =>
     fontSize: 13,
     fontFamily: 'Literata',
     fontStyle: 'italic',
-    color: colors.onPrimary,
+    color: '#ffffff',
   },
   promptLabel: {
     fontSize: 17,

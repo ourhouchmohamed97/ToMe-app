@@ -209,7 +209,7 @@ const createStyles = (colors: ThemeColors) =>
     padding: SPACING.md,
     gap: SPACING.sm,
     borderWidth: 1,
-    borderColor: 'rgba(229, 226, 220, 0.8)',
+    borderColor: colors.surfaceContainerHighest,
     shadowColor: '#463228',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.04,

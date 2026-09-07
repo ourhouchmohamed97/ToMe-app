@@ -7,17 +7,22 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
+  Share,
+  Platform,
 } from 'react-native';
 import { SPACING, RADIUS, ThemeColors } from '../styles/theme';
 import { useTheme } from '../styles/ThemeContext';
 import { ToMeIcon } from '../components/ToMeIcon';
 import { MemoryItem } from '../../types';
+import { isWeb } from '../storage';
 
 interface MemoriesScreenProps {
   memories: MemoryItem[];
   onOpenMemoryDetail: (memory: MemoryItem) => void;
   onOpenPhotoLightbox?: (url: string, caption?: string) => void;
 }
+
+type MemoryFilter = 'all' | 'photo' | 'voice' | 'thought';
 
 export const MemoriesScreen: React.FC<MemoriesScreenProps> = ({
   memories,
@@ -27,19 +32,39 @@ export const MemoriesScreen: React.FC<MemoriesScreenProps> = ({
   const { colors } = useTheme();
   const styles = createStyles(colors);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState<'all' | 'photo' | 'voice' | 'thought'>('all');
+  const [activeFilter, setActiveFilter] = useState<MemoryFilter>('all');
   const [playingId, setPlayingId] = useState<string | null>(null);
-  const [favorites, setFavorites] = useState<Record<string, boolean>>({});
+  const [favorites, setFavorites] = useState<Record<string, boolean>>(() =>
+    memories.reduce((acc, m) => (m.isFavorite ? { ...acc, [m.id]: true } : acc), {})
+  );
 
-  const filterPills = [
-    { id: 'all', label: 'All', count: 47 },
-    { id: 'photo', label: 'Photos', count: 12 },
-    { id: 'voice', label: 'Voice notes', count: 8 },
-    { id: 'thought', label: 'Milestones', count: 3 },
+  const filterPills: { id: MemoryFilter; label: string; count: number }[] = [
+    { id: 'all', label: 'All', count: memories.length },
+    { id: 'photo', label: 'Photos', count: memories.filter((m) => m.type === 'photo').length },
+    { id: 'voice', label: 'Voice notes', count: memories.filter((m) => m.type === 'voice').length },
+    {
+      id: 'thought',
+      label: 'Milestones',
+      count: memories.filter((m) => m.type === 'thought' || m.type === 'milestone').length,
+    },
   ];
 
   const toggleFavorite = (id: string) => {
     setFavorites((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const shareMemory = async (mem: MemoryItem) => {
+    const message = `${mem.quote}\n\nSaved in ToMe.`;
+    try {
+      if (!isWeb) {
+        await Share.share({ message });
+      } else {
+        const nav = navigator as unknown as {
+          share?: (data: { text: string }) => Promise<void>;
+        };
+        await nav.share?.({ text: message });
+      }
+    } catch {}
   };
 
   const filteredMemories = memories.filter((m) => {
@@ -72,9 +97,6 @@ export const MemoriesScreen: React.FC<MemoriesScreenProps> = ({
             placeholderTextColor={colors.outline}
             style={styles.searchInput}
           />
-          <TouchableOpacity style={styles.searchTuneBtn}>
-            <ToMeIcon name="tune" size={18} color={colors.onSurfaceVariant} />
-          </TouchableOpacity>
         </View>
 
         {/* Filter Pills */}
@@ -88,7 +110,7 @@ export const MemoriesScreen: React.FC<MemoriesScreenProps> = ({
             return (
               <React.Fragment key={pill.id}>
                 <TouchableOpacity
-                  onPress={() => setActiveFilter(pill.id as any)}
+                  onPress={() => setActiveFilter(pill.id)}
                   style={[styles.filterPill, isActive && styles.filterPillActive]}
                   activeOpacity={0.7}
                 >
@@ -100,6 +122,17 @@ export const MemoriesScreen: React.FC<MemoriesScreenProps> = ({
             );
           })}
         </ScrollView>
+
+        {/* Empty state */}
+        {sepMemories.length === 0 && augMemories.length === 0 ? (
+          <View style={styles.emptyState}>
+            <ToMeIcon name="search_off" size={28} color={colors.outline} />
+            <Text style={styles.emptyTitle}>No memories found</Text>
+            <Text style={styles.emptySubtitle}>
+              Try a different search or clear the filter.
+            </Text>
+          </View>
+        ) : null}
 
         {/* Timeline Content */}
         <View style={styles.timelineContainer}>
@@ -216,9 +249,9 @@ export const MemoriesScreen: React.FC<MemoriesScreenProps> = ({
                                 color={favorites[mem.id] ? colors.secondary : colors.outline}
                               />
                             </TouchableOpacity>
-                            <TouchableOpacity>
-                              <ToMeIcon name="share" size={18} color={colors.outline} />
-                            </TouchableOpacity>
+<TouchableOpacity onPress={() => shareMemory(mem)}>
+  <ToMeIcon name="share" size={18} color={colors.outline} />
+</TouchableOpacity>
                           </View>
                         </View>
                       </View>
@@ -317,9 +350,6 @@ const createStyles = (colors: ThemeColors) =>
     fontSize: 14,
     color: colors.onSurface,
   },
-  searchTuneBtn: {
-    padding: 4,
-  },
   filterScroll: {
     flexDirection: 'row',
     gap: 8,
@@ -347,6 +377,22 @@ const createStyles = (colors: ThemeColors) =>
   },
   timelineContainer: {
     gap: SPACING.lg,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: SPACING.xl,
+    gap: 6,
+  },
+  emptyTitle: {
+    fontSize: 16,
+    fontFamily: 'Literata',
+    fontWeight: '600',
+    color: colors.onSurface,
+  },
+  emptySubtitle: {
+    fontSize: 13,
+    color: colors.onSurfaceVariant,
+    textAlign: 'center',
   },
   monthSection: {
     gap: SPACING.sm,
@@ -428,7 +474,7 @@ const createStyles = (colors: ThemeColors) =>
     fontSize: 9,
     fontWeight: '700',
     letterSpacing: 0.5,
-    color: colors.onPrimary,
+    color: '#ffffff',
   },
   photoQuoteText: {
     fontSize: 14,

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
-  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { SPACING, RADIUS, ThemeColors } from '../styles/theme';
 import { useTheme } from '../styles/ThemeContext';
@@ -36,11 +37,27 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
 
+  useEffect(() => {
+    if (!isRecordingVoice) return;
+    const interval = setInterval(() => {
+      setVoiceSeconds((s) => s + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isRecordingVoice]);
+
+  const formatVoiceTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${String(secs).padStart(2, '0')}`;
+  };
+
+  const hasContent = !!inputText.trim() || !!selectedPhoto || isRecordingVoice;
+
   const handleSend = () => {
     if (!inputText.trim() && !selectedPhoto && !isRecordingVoice) return;
 
     if (isRecordingVoice) {
-      onSendMessage(`🎙️ Voice thought (${Math.max(1, voiceSeconds)}s recorded)`);
+      onSendMessage(`🎙️ Voice thought (${formatVoiceTime(voiceSeconds)} recorded)`);
       setIsRecordingVoice(false);
       setVoiceSeconds(0);
       return;
@@ -61,7 +78,11 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.flex}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <View style={styles.container}>
       <ScrollView
         ref={scrollViewRef}
         contentContainerStyle={styles.scrollContent}
@@ -244,19 +265,6 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
             <Text style={styles.chipText}>Golden hour moment</Text>
           </TouchableOpacity>
         </ScrollView>
-
-        {/* Attachment preview banner */}
-        {selectedPhoto ? (
-          <View style={styles.attachmentPreview}>
-            <Image source={{ uri: selectedPhoto }} style={styles.attachmentThumb} />
-            <Text style={styles.attachmentText} numberOfLines={1}>
-              Sunset snapshot ready to seal
-            </Text>
-            <TouchableOpacity onPress={() => setSelectedPhoto(null)}>
-              <ToMeIcon name="close" size={16} color={colors.onSurfaceVariant} />
-            </TouchableOpacity>
-          </View>
-        ) : null}
       </ScrollView>
 
       {/* Fixed Composer Footer (above the floating tab bar) */}
@@ -266,7 +274,7 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
           <View style={styles.voiceBanner}>
             <View style={styles.voicePulseDot} />
             <Text style={styles.voiceBannerText}>
-              Recording whisper thought... 0:0{voiceSeconds}
+              Recording whisper thought... {formatVoiceTime(voiceSeconds)}
             </Text>
             <TouchableOpacity onPress={() => setIsRecordingVoice(false)}>
               <Text style={styles.cancelText}>Cancel</Text>
@@ -321,7 +329,8 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
 
           <TouchableOpacity
             onPress={handleSend}
-            style={styles.sealButton}
+            disabled={!hasContent}
+            style={[styles.sealButton, !hasContent && styles.sealButtonDisabled]}
             activeOpacity={0.8}
           >
             <Text style={styles.sealButtonText}>Seal</Text>
@@ -329,12 +338,16 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
 const createStyles = (colors: ThemeColors) =>
   StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.surface,
@@ -539,7 +552,7 @@ const createStyles = (colors: ThemeColors) =>
   },
   locationText: {
     fontSize: 11,
-    color: colors.onPrimary,
+    color: '#ffffff',
     fontWeight: '500',
   },
   twilightCircle: {
@@ -701,5 +714,8 @@ const createStyles = (colors: ThemeColors) =>
     fontSize: 13,
     fontWeight: '600',
     color: colors.onSecondary,
+  },
+  sealButtonDisabled: {
+    opacity: 0.45,
   },
   });

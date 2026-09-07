@@ -114,12 +114,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBackToWelco
             </View>
 
             <View style={styles.fieldGroup}>
-              <View style={styles.fieldLabelRow}>
-                <Text style={styles.fieldLabel}>PASSWORD</Text>
-                <TouchableOpacity onPress={() => {}} disabled>
-                  <Text style={styles.forgotText}>Forgot?</Text>
-                </TouchableOpacity>
-              </View>
+              <Text style={styles.fieldLabel}>PASSWORD</Text>
               <View style={[styles.inputRow, password && styles.inputRowFocused]}>
                 <ToMeIcon name="vpn_key" size={18} color={colors.outline} />
                 <TextInput
@@ -279,7 +274,7 @@ const createStyles = (colors: ThemeColors) =>
     borderRadius: RADIUS.xl,
     padding: SPACING.lg,
     borderWidth: 1,
-    borderColor: 'rgba(229, 226, 220, 0.8)',
+    borderColor: colors.surfaceContainerHighest,
     shadowColor: '#463228',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.05,
@@ -293,16 +288,11 @@ const createStyles = (colors: ThemeColors) =>
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  fieldLabel: {
+fieldLabel: {
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 1,
     color: colors.onSurfaceVariant,
-    marginBottom: 6,
-  },
-  forgotText: {
-    fontSize: 12,
-    color: colors.outline,
     marginBottom: 6,
   },
   inputRow: {

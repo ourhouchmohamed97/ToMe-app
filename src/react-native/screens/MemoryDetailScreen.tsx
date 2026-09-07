@@ -263,14 +263,15 @@ export const MemoryDetailScreen: React.FC<MemoryDetailScreenProps> = ({
           </TouchableOpacity>
         </View>
 
-        {/* Toast */}
-        {toastMessage && (
-          <View style={styles.toast}>
-            <ToMeIcon name="favorite" size={16} color={colors.secondaryFixed} />
-            <Text style={styles.toastText}>{toastMessage}</Text>
-          </View>
-        )}
-      </ScrollView>
+        </ScrollView>
+
+      {/* Toast */}
+      {toastMessage && (
+        <View style={styles.toast}>
+          <ToMeIcon name="favorite" size={16} color={colors.secondaryFixed} />
+          <Text style={styles.toastText}>{toastMessage}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -595,7 +596,9 @@ const createStyles = (colors: ThemeColors) =>
   },
   toast: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 28,
+    left: 24,
+    right: 24,
     alignSelf: 'center',
     backgroundColor: colors.inverseSurface,
     paddingHorizontal: 16,
@@ -603,6 +606,7 @@ const createStyles = (colors: ThemeColors) =>
     borderRadius: RADIUS.full,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
