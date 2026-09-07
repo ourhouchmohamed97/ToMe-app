@@ -8,6 +8,10 @@ export default defineConfig(() => {
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
+        'react-native/Libraries/Utilities/codegenNativeComponent': path.resolve(
+          __dirname,
+          'src/react-native/stubs/codegenNativeComponent.tsx'
+        ),
         '@': path.resolve(__dirname, '.'),
         'react-native': 'react-native-web',
       },

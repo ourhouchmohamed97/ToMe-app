@@ -19,6 +19,7 @@ interface MeScreenProps {
   onUpdateProfile: (updated: Partial<ProfilePreferences>) => void;
   onExportData: () => void;
   onEraseJournal: () => void;
+  onLogout: () => void;
 }
 
 export const MeScreen: React.FC<MeScreenProps> = ({
@@ -26,10 +27,12 @@ export const MeScreen: React.FC<MeScreenProps> = ({
   onUpdateProfile,
   onExportData,
   onEraseJournal,
+  onLogout,
 }) => {
   const [showTimeModal, setShowTimeModal] = useState(false);
   const [showFreqModal, setShowFreqModal] = useState(false);
   const [showEraseModal, setShowEraseModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [toastText, setToastText] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
@@ -300,6 +303,25 @@ export const MeScreen: React.FC<MeScreenProps> = ({
               </View>
               <ToMeIcon name="chevron_right" size={18} color={COLORS.error} />
             </TouchableOpacity>
+
+            <View style={styles.rowDivider} />
+
+            <TouchableOpacity
+              onPress={() => setShowLogoutModal(true)}
+              style={styles.rowItem}
+              activeOpacity={0.7}
+            >
+              <View style={styles.rowLeft}>
+                <View style={styles.iconCircle}>
+                  <ToMeIcon name="logout" size={16} color={COLORS.onSurfaceVariant} />
+                </View>
+                <View>
+                  <Text style={styles.rowTitle}>Log out</Text>
+                  <Text style={styles.rowSubtitle}>Return to the sign-in screen</Text>
+                </View>
+              </View>
+              <ToMeIcon name="chevron_right" size={18} color={COLORS.outline} />
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -409,6 +431,35 @@ export const MeScreen: React.FC<MeScreenProps> = ({
                   style={styles.modalBtnDelete}
                 >
                   <Text style={styles.modalBtnDeleteText}>Yes, Erase All</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Logout Modal */}
+        <Modal visible={showLogoutModal} transparent animationType="fade">
+          <View style={styles.modalBackdrop}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Log out?</Text>
+              <Text style={styles.modalSubtitle}>
+                Your journal and memories stay saved on this device. You can sign back in anytime.
+              </Text>
+              <View style={styles.modalActionRow}>
+                <TouchableOpacity
+                  onPress={() => setShowLogoutModal(false)}
+                  style={styles.modalBtnKeep}
+                >
+                  <Text style={styles.modalBtnKeepText}>Stay signed in</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setShowLogoutModal(false);
+                    onLogout();
+                  }}
+                  style={styles.modalBtnDelete}
+                >
+                  <Text style={styles.modalBtnDeleteText}>Log out</Text>
                 </TouchableOpacity>
               </View>
             </View>

@@ -17,28 +17,61 @@ import { MemoriesScreen } from './screens/MemoriesScreen';
 import { MemoryDetailScreen } from './screens/MemoryDetailScreen';
 import { MeScreen } from './screens/MeScreen';
 import { WelcomeScreen } from './screens/WelcomeScreen';
+import { LoginScreen } from './screens/LoginScreen';
 import { MobileDeviceFrame } from './components/MobileDeviceFrame';
 import { ExpoInstructionsModal } from './components/ExpoInstructionsModal';
 import { ToMeIcon } from './components/ToMeIcon';
 
-export type AppStage = 'welcome' | 'app';
+export type AppStage = 'welcome' | 'login' | 'app';
 
 export const ToMeReactNativeApp: React.FC = () => {
   const [appStage, setAppStage] = useState<AppStage>('welcome');
+  const [authReady, setAuthReady] = useState(false);
   const [activeTab, setActiveTab] = useState<ActiveTab>('today');
   const [todaySubView, setTodaySubView] = useState<TodaySubView>('chat');
   const [showExpoGuide, setShowExpoGuide] = useState(false);
 
-  // Restore launch stage from storage
+  // Restore launch + auth stage from storage
   useEffect(() => {
-    readStorage<boolean>('tome_seen_welcome', false).then((seen) => {
-      if (seen) setAppStage('app');
+    Promise.all([
+      readStorage<boolean>('tome_seen_welcome', false),
+      readStorage<boolean>('tome_authed', false),
+    ]).then(([seen, authed]) => {
+      if (authed) {
+        setAppStage('app');
+      } else if (seen) {
+        setAppStage('login');
+      } else {
+        setAppStage('welcome');
+      }
+      setAuthReady(true);
     });
   }, []);
 
   const handleBeginWelcome = () => {
     writeStorage('tome_seen_welcome', true);
+    setAppStage('login');
+  };
+
+  const handleLogin = (email: string) => {
+    const displayName = email.split('@')[0].replace(/[._-]+/g, ' ');
+    const prettyName = displayName
+      .split(' ')
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(' ');
+    writeStorage('tome_authed', true);
+    setProfile((prev) => ({
+      ...prev,
+      name: prettyName || prev.name,
+      subtitle: 'Capturing moments since September 2026',
+    }));
     setAppStage('app');
+  };
+
+  const handleLogout = () => {
+    writeStorage('tome_authed', false);
+    setAppStage('login');
   };
 
   // Storage persistence
@@ -197,20 +230,26 @@ export const ToMeReactNativeApp: React.FC = () => {
   return (
     <MobileDeviceFrame onOpenExpoGuide={() => setShowExpoGuide(true)}>
       <SafeAreaView style={styles.appShell} edges={['top', 'bottom']}>
-        {appStage === 'welcome' ? (
+        {appStage === 'welcome' && (
           <WelcomeScreen onBegin={handleBeginWelcome} />
-        ) : (
+        )}
+
+        {appStage === 'login' && (
+          <LoginScreen onLogin={handleLogin} onBackToWelcome={handleBeginWelcome} />
+        )}
+
+        {appStage === 'app' && (
           <>
             {/* React Native Header */}
             <ToMeHeader
-              activeTab={activeTab}
-              todaySubView={todaySubView}
-              onSelectTab={setActiveTab}
-              onBackFromDetail={handleBackFromDetail}
-              onToggleEveningCheckin={() =>
-                setTodaySubView((prev) => (prev === 'chat' ? 'evening' : 'chat'))
-              }
-            />
+                activeTab={activeTab}
+                todaySubView={todaySubView}
+                onSelectTab={setActiveTab}
+                onBackFromDetail={handleBackFromDetail}
+                onToggleEveningCheckin={() =>
+                  setTodaySubView((prev) => (prev === 'chat' ? 'evening' : 'chat'))
+                }
+              />
 
             {/* Current Active Screen */}
             <View style={styles.screenContainer}>
@@ -253,6 +292,7 @@ export const ToMeReactNativeApp: React.FC = () => {
                   onUpdateProfile={(up) => setProfile((prev) => ({ ...prev, ...up }))}
                   onExportData={handleExportData}
                   onEraseJournal={handleEraseJournal}
+                  onLogout={handleLogout}
                 />
               )}
             </View>
