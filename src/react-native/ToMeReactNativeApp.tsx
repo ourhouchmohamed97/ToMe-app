@@ -16,14 +16,30 @@ import { EveningCheckinScreen } from './screens/EveningCheckinScreen';
 import { MemoriesScreen } from './screens/MemoriesScreen';
 import { MemoryDetailScreen } from './screens/MemoryDetailScreen';
 import { MeScreen } from './screens/MeScreen';
+import { WelcomeScreen } from './screens/WelcomeScreen';
 import { MobileDeviceFrame } from './components/MobileDeviceFrame';
 import { ExpoInstructionsModal } from './components/ExpoInstructionsModal';
 import { ToMeIcon } from './components/ToMeIcon';
 
+export type AppStage = 'welcome' | 'app';
+
 export const ToMeReactNativeApp: React.FC = () => {
+  const [appStage, setAppStage] = useState<AppStage>('welcome');
   const [activeTab, setActiveTab] = useState<ActiveTab>('today');
   const [todaySubView, setTodaySubView] = useState<TodaySubView>('chat');
   const [showExpoGuide, setShowExpoGuide] = useState(false);
+
+  // Restore launch stage from storage
+  useEffect(() => {
+    readStorage<boolean>('tome_seen_welcome', false).then((seen) => {
+      if (seen) setAppStage('app');
+    });
+  }, []);
+
+  const handleBeginWelcome = () => {
+    writeStorage('tome_seen_welcome', true);
+    setAppStage('app');
+  };
 
   // Storage persistence
   const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_CHAT_MESSAGES);
@@ -181,79 +197,85 @@ export const ToMeReactNativeApp: React.FC = () => {
   return (
     <MobileDeviceFrame onOpenExpoGuide={() => setShowExpoGuide(true)}>
       <SafeAreaView style={styles.appShell} edges={['top', 'bottom']}>
-        {/* React Native Header */}
-        <ToMeHeader
-          activeTab={activeTab}
-          todaySubView={todaySubView}
-          onSelectTab={setActiveTab}
-          onBackFromDetail={handleBackFromDetail}
-          onToggleEveningCheckin={() =>
-            setTodaySubView((prev) => (prev === 'chat' ? 'evening' : 'chat'))
-          }
-        />
-
-        {/* Current Active Screen */}
-        <View style={styles.screenContainer}>
-          {activeTab === 'today' && todaySubView === 'chat' && (
-            <TodayScreen
-              messages={messages}
-              onSendMessage={handleSendMessage}
-              onOpenEveningCheckin={() => setTodaySubView('evening')}
-              onOpenPhotoLightbox={handleOpenPhotoLightbox}
+        {appStage === 'welcome' ? (
+          <WelcomeScreen onBegin={handleBeginWelcome} />
+        ) : (
+          <>
+            {/* React Native Header */}
+            <ToMeHeader
+              activeTab={activeTab}
+              todaySubView={todaySubView}
+              onSelectTab={setActiveTab}
+              onBackFromDetail={handleBackFromDetail}
+              onToggleEveningCheckin={() =>
+                setTodaySubView((prev) => (prev === 'chat' ? 'evening' : 'chat'))
+              }
             />
-          )}
 
-          {activeTab === 'today' && todaySubView === 'evening' && (
-            <EveningCheckinScreen
-              onBackToChat={() => setTodaySubView('chat')}
-              onSavedReflection={handleSavedReflection}
-              onOpenPhotoLightbox={handleOpenPhotoLightbox}
-            />
-          )}
-
-          {activeTab === 'memories' && (
-            <MemoriesScreen
-              memories={memories}
-              onOpenMemoryDetail={handleOpenMemoryDetail}
-              onOpenPhotoLightbox={handleOpenPhotoLightbox}
-            />
-          )}
-
-          {activeTab === 'memory-detail' && (
-            <MemoryDetailScreen
-              memory={selectedMemory}
-              onBack={handleBackFromDetail}
-              onOpenPhotoLightbox={handleOpenPhotoLightbox}
-            />
-          )}
-
-          {activeTab === 'me' && (
-            <MeScreen
-              profile={profile}
-              onUpdateProfile={(up) => setProfile((prev) => ({ ...prev, ...up }))}
-              onExportData={handleExportData}
-              onEraseJournal={handleEraseJournal}
-            />
-          )}
-        </View>
-
-        {/* Photo Lightbox Modal */}
-        {lightbox && (
-          <Modal visible transparent animationType="fade">
-            <TouchableOpacity
-              activeOpacity={1}
-              onPress={() => setLightbox(null)}
-              style={styles.lightboxBackdrop}
-            >
-              <View style={styles.lightboxCard}>
-                <Image
-                  source={{ uri: lightbox.url }}
-                  style={styles.lightboxImage}
-                  resizeMode="contain"
+            {/* Current Active Screen */}
+            <View style={styles.screenContainer}>
+              {activeTab === 'today' && todaySubView === 'chat' && (
+                <TodayScreen
+                  messages={messages}
+                  onSendMessage={handleSendMessage}
+                  onOpenEveningCheckin={() => setTodaySubView('evening')}
+                  onOpenPhotoLightbox={handleOpenPhotoLightbox}
                 />
-              </View>
-            </TouchableOpacity>
-          </Modal>
+              )}
+
+              {activeTab === 'today' && todaySubView === 'evening' && (
+                <EveningCheckinScreen
+                  onBackToChat={() => setTodaySubView('chat')}
+                  onSavedReflection={handleSavedReflection}
+                  onOpenPhotoLightbox={handleOpenPhotoLightbox}
+                />
+              )}
+
+              {activeTab === 'memories' && (
+                <MemoriesScreen
+                  memories={memories}
+                  onOpenMemoryDetail={handleOpenMemoryDetail}
+                  onOpenPhotoLightbox={handleOpenPhotoLightbox}
+                />
+              )}
+
+              {activeTab === 'memory-detail' && (
+                <MemoryDetailScreen
+                  memory={selectedMemory}
+                  onBack={handleBackFromDetail}
+                  onOpenPhotoLightbox={handleOpenPhotoLightbox}
+                />
+              )}
+
+              {activeTab === 'me' && (
+                <MeScreen
+                  profile={profile}
+                  onUpdateProfile={(up) => setProfile((prev) => ({ ...prev, ...up }))}
+                  onExportData={handleExportData}
+                  onEraseJournal={handleEraseJournal}
+                />
+              )}
+            </View>
+
+            {/* Photo Lightbox Modal */}
+            {lightbox && (
+              <Modal visible transparent animationType="fade">
+                <TouchableOpacity
+                  activeOpacity={1}
+                  onPress={() => setLightbox(null)}
+                  style={styles.lightboxBackdrop}
+                >
+                  <View style={styles.lightboxCard}>
+                    <Image
+                      source={{ uri: lightbox.url }}
+                      style={styles.lightboxImage}
+                      resizeMode="contain"
+                    />
+                  </View>
+                </TouchableOpacity>
+              </Modal>
+            )}
+          </>
         )}
 
         {/* Expo & React Native Instructions Guide */}
