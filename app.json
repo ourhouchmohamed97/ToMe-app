@@ -29,6 +29,7 @@
         "foregroundImage": "./public/assets/adaptive-icon.png",
         "backgroundColor": "#fcf9f3"
       },
+      "softwareKeyboardLayoutMode": "resize",
       "package": "com.tome.privatejournal",
       "permissions": [
         "CAMERA",

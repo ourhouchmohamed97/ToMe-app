@@ -80,7 +80,7 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
   return (
     <KeyboardAvoidingView
       style={styles.flex}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.container}>
       <ScrollView
