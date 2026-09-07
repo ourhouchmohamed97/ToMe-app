@@ -10,7 +10,8 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { COLORS, SPACING, RADIUS } from '../styles/theme';
+import { SPACING, RADIUS, ThemeColors } from '../styles/theme';
+import { useTheme } from '../styles/ThemeContext';
 import { ToMeIcon } from '../components/ToMeIcon';
 import { ASSETS } from '../../data/mockData';
 
@@ -20,6 +21,8 @@ interface LoginScreenProps {
 }
 
 export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBackToWelcome }) => {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -73,7 +76,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBackToWelco
               style={styles.backPill}
               activeOpacity={0.8}
             >
-              <ToMeIcon name="arrow_back" size={16} color={COLORS.onSurfaceVariant} />
+              <ToMeIcon name="arrow_back" size={16} color={colors.onSurfaceVariant} />
               <Text style={styles.backPillText}>Back</Text>
             </TouchableOpacity>
           ) : null}
@@ -92,7 +95,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBackToWelco
             <View style={styles.fieldGroup}>
               <Text style={styles.fieldLabel}>EMAIL</Text>
               <View style={[styles.inputRow, email && styles.inputRowFocused]}>
-                <ToMeIcon name="mail" size={18} color={COLORS.outline} />
+                <ToMeIcon name="mail" size={18} color={colors.outline} />
                 <TextInput
                   value={email}
                   onChangeText={(text) => {
@@ -100,7 +103,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBackToWelco
                     setError(null);
                   }}
                   placeholder="you@example.com"
-                  placeholderTextColor={COLORS.outline}
+                  placeholderTextColor={colors.outline}
                   style={styles.input}
                   keyboardType="email-address"
                   autoCapitalize="none"
@@ -118,7 +121,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBackToWelco
                 </TouchableOpacity>
               </View>
               <View style={[styles.inputRow, password && styles.inputRowFocused]}>
-                <ToMeIcon name="vpn_key" size={18} color={COLORS.outline} />
+                <ToMeIcon name="vpn_key" size={18} color={colors.outline} />
                 <TextInput
                   value={password}
                   onChangeText={(text) => {
@@ -126,7 +129,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBackToWelco
                     setError(null);
                   }}
                   placeholder="Your password"
-                  placeholderTextColor={COLORS.outline}
+                  placeholderTextColor={colors.outline}
                   style={styles.input}
                   secureTextEntry={!showPassword}
                   autoCapitalize="none"
@@ -140,7 +143,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBackToWelco
                   <ToMeIcon
                     name={showPassword ? 'visibility_off' : 'visibility'}
                     size={18}
-                    color={COLORS.outline}
+                    color={colors.outline}
                   />
                 </TouchableOpacity>
               </View>
@@ -148,7 +151,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBackToWelco
 
             {error ? (
               <View style={styles.errorRow}>
-                <ToMeIcon name="error_outline" size={16} color={COLORS.error} />
+                <ToMeIcon name="error_outline" size={16} color={colors.error} />
                 <Text style={styles.errorText}>{error}</Text>
               </View>
             ) : null}
@@ -167,7 +170,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBackToWelco
               ) : (
                 <>
                   <Text style={styles.signInButtonText}>Sign in</Text>
-                  <ToMeIcon name="arrow_forward" size={18} color={COLORS.onSecondary} />
+                  <ToMeIcon name="arrow_forward" size={18} color={colors.onSecondary} />
                 </>
               )}
             </TouchableOpacity>
@@ -175,7 +178,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBackToWelco
 
           {/* Privacy reminder */}
           <View style={styles.privacyRow}>
-            <ToMeIcon name="lock" size={14} color={COLORS.outline} />
+            <ToMeIcon name="lock" size={14} color={colors.outline} />
             <Text style={styles.privacyText}>Your words stay yours. End-to-end private.</Text>
           </View>
         </ScrollView>
@@ -184,13 +187,14 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onBackToWelco
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   flex: {
     flex: 1,
   },
   container: {
     flex: 1,
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
     position: 'relative',
     overflow: 'hidden',
   },
@@ -222,7 +226,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    backgroundColor: COLORS.surfaceContainer,
+    backgroundColor: colors.surfaceContainer,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: RADIUS.full,
@@ -230,7 +234,7 @@ const styles = StyleSheet.create({
   },
   backPillText: {
     fontSize: 12,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     fontWeight: '500',
   },
   brandHeader: {
@@ -242,7 +246,7 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#463228',
@@ -250,7 +254,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 14,
     borderWidth: 1,
-    borderColor: COLORS.surfaceContainerHighest,
+    borderColor: colors.surfaceContainerHighest,
     marginBottom: 14,
   },
   logo: {
@@ -261,17 +265,17 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontFamily: 'Literata',
     fontWeight: '600',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     letterSpacing: 0.5,
   },
   brandTagline: {
     fontSize: 14,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     marginTop: 4,
     textAlign: 'center',
   },
   card: {
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     borderRadius: RADIUS.xl,
     padding: SPACING.lg,
     borderWidth: 1,
@@ -293,39 +297,39 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 1,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     marginBottom: 6,
   },
   forgotText: {
     fontSize: 12,
-    color: COLORS.outline,
+    color: colors.outline,
     marginBottom: 6,
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: COLORS.surfaceContainerLow,
+    backgroundColor: colors.surfaceContainerLow,
     borderRadius: RADIUS.md,
     paddingHorizontal: 12,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: COLORS.surfaceContainerHighest,
+    borderColor: colors.surfaceContainerHighest,
   },
   inputRowFocused: {
-    borderColor: COLORS.secondaryContainer,
+    borderColor: colors.secondaryContainer,
   },
   input: {
     flex: 1,
     fontSize: 15,
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     padding: 0,
   },
   errorRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: COLORS.errorContainer,
+    backgroundColor: colors.errorContainer,
     paddingHorizontal: 10,
     paddingVertical: 8,
     borderRadius: RADIUS.sm,
@@ -334,17 +338,17 @@ const styles = StyleSheet.create({
   errorText: {
     flex: 1,
     fontSize: 13,
-    color: COLORS.error,
+    color: colors.error,
   },
   signInButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.secondary,
+    backgroundColor: colors.secondary,
     paddingVertical: 15,
     borderRadius: RADIUS.full,
     gap: 8,
-    shadowColor: COLORS.secondary,
+    shadowColor: colors.secondary,
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.25,
     shadowRadius: 12,
@@ -356,7 +360,7 @@ const styles = StyleSheet.create({
   signInButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.onSecondary,
+    color: colors.onSecondary,
   },
   spinner: {
     width: 16,
@@ -364,7 +368,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 2,
     borderColor: 'rgba(255, 255, 255, 0.4)',
-    borderTopColor: COLORS.onSecondary,
+    borderTopColor: colors.onSecondary,
   },
   privacyRow: {
     flexDirection: 'row',
@@ -375,8 +379,8 @@ const styles = StyleSheet.create({
   },
   privacyText: {
     fontSize: 12,
-    color: COLORS.outline,
+    color: colors.outline,
     fontFamily: 'Literata',
     fontStyle: 'italic',
   },
-});
+  });

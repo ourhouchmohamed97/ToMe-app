@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Platform, Modal } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { COLORS, SPACING, RADIUS } from '../styles/theme';
+import { SPACING, RADIUS, ThemeColors } from '../styles/theme';
+import { useTheme } from '../styles/ThemeContext';
 import { ToMeIcon } from './ToMeIcon';
 import { ASSETS } from '../../data/mockData';
 import { ActiveTab, TodaySubView } from '../../types';
@@ -23,6 +24,8 @@ export const ToMeHeader: React.FC<ToMeHeaderProps> = ({
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   const menuItems: { tab: ActiveTab; label: string; icon: string }[] = [
     { tab: 'today', label: 'Today', icon: 'auto_awesome' },
@@ -49,7 +52,7 @@ export const ToMeHeader: React.FC<ToMeHeaderProps> = ({
           style={styles.burgerButton}
           accessibilityLabel="Open navigation menu"
         >
-          <ToMeIcon name="menu" size={22} color={COLORS.onSurface} />
+          <ToMeIcon name="menu" size={22} color={colors.onSurface} />
         </TouchableOpacity>
 
         {activeTab === 'memory-detail' ? (
@@ -58,7 +61,7 @@ export const ToMeHeader: React.FC<ToMeHeaderProps> = ({
             style={styles.backButton}
             accessibilityLabel="Go back"
           >
-            <ToMeIcon name="arrow_back_ios_new" size={20} color={COLORS.onSurfaceVariant} />
+            <ToMeIcon name="arrow_back_ios_new" size={20} color={colors.onSurfaceVariant} />
           </TouchableOpacity>
         ) : null}
 
@@ -93,7 +96,7 @@ export const ToMeHeader: React.FC<ToMeHeaderProps> = ({
             <ToMeIcon
               name={todaySubView === 'evening' ? 'wb_sunny' : 'bedtime'}
               size={14}
-              color={COLORS.secondary}
+              color={colors.secondary}
             />
             <Text style={styles.eveningPillText}>
               {todaySubView === 'evening' ? 'Day flow' : 'Evening'}
@@ -140,13 +143,13 @@ export const ToMeHeader: React.FC<ToMeHeaderProps> = ({
                 <ToMeIcon
                   name={item.icon}
                   size={18}
-                  color={isActive ? COLORS.secondary : COLORS.onSurfaceVariant}
+                  color={isActive ? colors.secondary : colors.onSurfaceVariant}
                 />
                 <Text style={[styles.menuItemText, isActive && styles.menuItemTextActive]}>
                   {item.label}
                 </Text>
                 {isActive ? (
-                  <ToMeIcon name="check" size={16} color={COLORS.secondary} />
+                  <ToMeIcon name="check" size={16} color={colors.secondary} />
                 ) : null}
               </TouchableOpacity>
             );
@@ -158,7 +161,8 @@ export const ToMeHeader: React.FC<ToMeHeaderProps> = ({
 );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   container: {
     height: 60,
     flexDirection: 'row',
@@ -167,7 +171,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.md,
     backgroundColor: 'rgba(252, 249, 243, 0.92)',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: COLORS.surfaceContainerHighest,
+    borderBottomColor: colors.surfaceContainerHighest,
   },
   leftSection: {
     flexDirection: 'row',
@@ -196,11 +200,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: SPACING.md,
     width: 240,
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     borderRadius: RADIUS.lg,
     padding: 6,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: COLORS.surfaceContainerHighest,
+    borderColor: colors.surfaceContainerHighest,
     shadowColor: '#2b231d',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.14,
@@ -219,10 +223,10 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: '500',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
   },
   menuItemTextActive: {
-    color: COLORS.secondary,
+    color: colors.secondary,
     fontWeight: '700',
   },
   backButton: {
@@ -254,26 +258,26 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     fontFamily: 'Literata',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
   },
   dot: {
     width: 4,
     height: 4,
     borderRadius: 2,
-    backgroundColor: COLORS.secondary,
+    backgroundColor: colors.secondary,
     opacity: 0.6,
   },
   subTitle: {
     fontSize: 17,
     fontWeight: '400',
     fontFamily: 'Literata',
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
   },
   tagline: {
     fontSize: 9,
     fontWeight: '600',
     letterSpacing: 1,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     marginTop: 1,
   },
   rightSection: {
@@ -285,7 +289,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: COLORS.surfaceContainer,
+    backgroundColor: colors.surfaceContainer,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: RADIUS.full,
@@ -293,7 +297,7 @@ const styles = StyleSheet.create({
   eveningPillText: {
     fontSize: 11,
     fontWeight: '600',
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
   },
   profileButton: {
     width: 36,
@@ -304,11 +308,11 @@ const styles = StyleSheet.create({
   },
   profileButtonActive: {
     borderWidth: 2,
-    borderColor: COLORS.secondary,
+    borderColor: colors.secondary,
   },
   avatar: {
     width: 30,
     height: 30,
     borderRadius: 15,
   },
-});
+  });

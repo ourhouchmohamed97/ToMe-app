@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Modal, TouchableOpacity, Image, Share } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { COLORS } from './styles/theme';
+import { ThemeProvider, useTheme } from './styles/ThemeContext';
+import { ThemeColors } from './styles/theme';
 import { isWeb, readStorage, writeStorage, clearStorage } from './storage';
 import { ActiveTab, TodaySubView, ChatMessage, MemoryItem, ProfilePreferences } from '../types';
 import {
@@ -24,7 +25,13 @@ import { ToMeIcon } from './components/ToMeIcon';
 
 export type AppStage = 'welcome' | 'login' | 'app';
 
-export const ToMeReactNativeApp: React.FC = () => {
+export const ToMeReactNativeApp: React.FC = () => (
+  <ThemeProvider>
+    <ToMeAppShell />
+  </ThemeProvider>
+);
+
+const ToMeAppShell: React.FC = () => {
   const [appStage, setAppStage] = useState<AppStage>('welcome');
   const [authReady, setAuthReady] = useState(false);
   const [activeTab, setActiveTab] = useState<ActiveTab>('today');
@@ -81,6 +88,9 @@ export const ToMeReactNativeApp: React.FC = () => {
 
   const [selectedMemory, setSelectedMemory] = useState<MemoryItem | null>(null);
   const [lightbox, setLightbox] = useState<{ url: string; caption?: string } | null>(null);
+
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   useEffect(() => {
     readStorage('tome_rn_messages', INITIAL_CHAT_MESSAGES).then(setMessages);
@@ -328,32 +338,33 @@ export const ToMeReactNativeApp: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  appShell: {
-    flex: 1,
-    backgroundColor: COLORS.surface,
-    position: 'relative',
-  },
-  screenContainer: {
-    flex: 1,
-    position: 'relative',
-  },
-  lightboxBackdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.85)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-  },
-  lightboxCard: {
-    width: '100%',
-    maxHeight: '80%',
-    backgroundColor: '#000',
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  lightboxImage: {
-    width: '100%',
-    height: 380,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    appShell: {
+      flex: 1,
+      backgroundColor: colors.surface,
+      position: 'relative',
+    },
+    screenContainer: {
+      flex: 1,
+      position: 'relative',
+    },
+    lightboxBackdrop: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.85)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 16,
+    },
+    lightboxCard: {
+      width: '100%',
+      maxHeight: '80%',
+      backgroundColor: '#000',
+      borderRadius: 16,
+      overflow: 'hidden',
+    },
+    lightboxImage: {
+      width: '100%',
+      height: 380,
+    },
+  });

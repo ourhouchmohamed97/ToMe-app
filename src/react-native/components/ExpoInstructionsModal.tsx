@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView } from 'react-native';
-import { COLORS, SPACING, RADIUS } from '../styles/theme';
+import { SPACING, RADIUS, ThemeColors } from '../styles/theme';
+import { useTheme } from '../styles/ThemeContext';
 import { ToMeIcon } from './ToMeIcon';
 
 interface ExpoInstructionsModalProps {
@@ -12,6 +13,8 @@ export const ExpoInstructionsModal: React.FC<ExpoInstructionsModalProps> = ({
   visible,
   onClose,
 }) => {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   return (
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.backdrop}>
@@ -19,7 +22,7 @@ export const ExpoInstructionsModal: React.FC<ExpoInstructionsModalProps> = ({
           <View style={styles.headerRow}>
             <View style={styles.headerLeft}>
               <View style={styles.iconCircle}>
-                <ToMeIcon name="phone_iphone" size={18} color={COLORS.secondary} />
+                <ToMeIcon name="phone_iphone" size={18} color={colors.secondary} />
               </View>
               <View>
                 <Text style={styles.title}>React Native (iOS & Android)</Text>
@@ -27,7 +30,7 @@ export const ExpoInstructionsModal: React.FC<ExpoInstructionsModalProps> = ({
               </View>
             </View>
             <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-              <ToMeIcon name="close" size={20} color={COLORS.onSurface} />
+              <ToMeIcon name="close" size={20} color={colors.onSurface} />
             </TouchableOpacity>
           </View>
 
@@ -128,7 +131,8 @@ export const ExpoInstructionsModal: React.FC<ExpoInstructionsModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   backdrop: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.55)',
@@ -137,14 +141,14 @@ const styles = StyleSheet.create({
     padding: SPACING.md,
   },
   modalCard: {
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     borderRadius: RADIUS.xl,
     padding: SPACING.lg,
     width: '100%',
     maxWidth: 480,
     maxHeight: '85%',
     borderWidth: 1,
-    borderColor: COLORS.surfaceContainerHighest,
+    borderColor: colors.surfaceContainerHighest,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.25,
@@ -157,7 +161,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.md,
     paddingBottom: 8,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.surfaceContainerHigh,
+    borderBottomColor: colors.surfaceContainerHigh,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -168,18 +172,18 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: COLORS.secondaryFixed,
+    backgroundColor: colors.secondaryFixed,
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
     fontSize: 16,
     fontWeight: '700',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
   },
   subtitle: {
     fontSize: 12,
-    color: COLORS.secondary,
+    color: colors.secondary,
     fontWeight: '500',
   },
   closeBtn: {
@@ -190,29 +194,29 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 13,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     lineHeight: 20,
     marginBottom: SPACING.md,
   },
   codeSpan: {
     fontFamily: 'monospace',
-    backgroundColor: COLORS.surfaceContainer,
+    backgroundColor: colors.surfaceContainer,
     paddingHorizontal: 4,
     borderRadius: 4,
-    color: COLORS.secondary,
+    color: colors.secondary,
     fontSize: 12,
   },
   stepCard: {
-    backgroundColor: COLORS.surfaceContainerLow,
+    backgroundColor: colors.surfaceContainerLow,
     borderRadius: RADIUS.lg,
     padding: SPACING.md,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: COLORS.surfaceContainerHighest,
+    borderColor: colors.surfaceContainerHighest,
   },
   stepBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: COLORS.secondary,
+    backgroundColor: colors.secondary,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: RADIUS.full,
@@ -221,27 +225,27 @@ const styles = StyleSheet.create({
   stepBadgeText: {
     fontSize: 9,
     fontWeight: '700',
-    color: COLORS.onSecondary,
+    color: colors.onSecondary,
     letterSpacing: 0.5,
   },
   stepTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     marginBottom: 6,
   },
   stepText: {
     fontSize: 12,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     lineHeight: 18,
     marginBottom: 4,
   },
   boldText: {
     fontWeight: '600',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
   },
   codeBox: {
-    backgroundColor: COLORS.primaryContainer,
+    backgroundColor: colors.primaryContainer,
     borderRadius: RADIUS.md,
     padding: 10,
     marginVertical: 6,
@@ -250,7 +254,7 @@ const styles = StyleSheet.create({
   codeText: {
     fontFamily: 'monospace',
     fontSize: 12,
-    color: COLORS.inverseOnSurface,
+    color: colors.inverseOnSurface,
   },
   bulletRow: {
     flexDirection: 'row',
@@ -259,16 +263,16 @@ const styles = StyleSheet.create({
   },
   bulletDot: {
     fontSize: 12,
-    color: COLORS.secondary,
+    color: colors.secondary,
   },
   bulletText: {
     flex: 1,
     fontSize: 12,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     lineHeight: 16,
   },
   doneBtn: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: colors.primary,
     paddingVertical: 12,
     borderRadius: RADIUS.full,
     alignItems: 'center',
@@ -276,6 +280,6 @@ const styles = StyleSheet.create({
   doneBtnText: {
     fontSize: 13,
     fontWeight: '600',
-    color: COLORS.onPrimary,
+    color: colors.onPrimary,
   },
-});
+  });

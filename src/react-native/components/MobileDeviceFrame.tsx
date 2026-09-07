@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
-import { COLORS, SPACING, RADIUS } from '../styles/theme';
+import { SPACING, RADIUS, ThemeColors } from '../styles/theme';
+import { useTheme } from '../styles/ThemeContext';
 import { ToMeIcon } from './ToMeIcon';
 
 interface MobileDeviceFrameProps {
@@ -15,6 +16,8 @@ export const MobileDeviceFrame: React.FC<MobileDeviceFrameProps> = ({
   onOpenExpoGuide,
 }) => {
   const [deviceMode, setDeviceMode] = useState<DeviceMode>('ios');
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   if (Platform.OS !== 'web') {
     return <View style={styles.nativeContainer}>{children}</View>;
@@ -34,7 +37,7 @@ export const MobileDeviceFrame: React.FC<MobileDeviceFrameProps> = ({
               <ToMeIcon
                 name="phone_iphone"
                 size={14}
-                color={deviceMode === 'ios' ? COLORS.onPrimary : COLORS.onSurfaceVariant}
+                color={deviceMode === 'ios' ? colors.onPrimary : colors.onSurfaceVariant}
               />
               <Text
                 style={[
@@ -53,7 +56,7 @@ export const MobileDeviceFrame: React.FC<MobileDeviceFrameProps> = ({
               <ToMeIcon
                 name="phone_android"
                 size={14}
-                color={deviceMode === 'android' ? COLORS.onPrimary : COLORS.onSurfaceVariant}
+                color={deviceMode === 'android' ? colors.onPrimary : colors.onSurfaceVariant}
               />
               <Text
                 style={[
@@ -72,7 +75,7 @@ export const MobileDeviceFrame: React.FC<MobileDeviceFrameProps> = ({
               <ToMeIcon
                 name="fullscreen"
                 size={14}
-                color={deviceMode === 'fluid' ? COLORS.onPrimary : COLORS.onSurfaceVariant}
+                color={deviceMode === 'fluid' ? colors.onPrimary : colors.onSurfaceVariant}
               />
               <Text
                 style={[
@@ -91,7 +94,7 @@ export const MobileDeviceFrame: React.FC<MobileDeviceFrameProps> = ({
           style={styles.expoGuideBtn}
           activeOpacity={0.8}
         >
-          <ToMeIcon name="rocket_launch" size={14} color={COLORS.secondary} />
+          <ToMeIcon name="rocket_launch" size={14} color={colors.secondary} />
           <Text style={styles.expoGuideBtnText}>Run on Phone (Expo / RN)</Text>
         </TouchableOpacity>
       </View>
@@ -143,15 +146,16 @@ export const MobileDeviceFrame: React.FC<MobileDeviceFrameProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   outerContainer: {
     flex: 1,
-    backgroundColor: '#ede9e2',
+    backgroundColor: colors.surfaceDim,
   },
   nativeContainer: {
     flex: 1,
     width: '100%',
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
   },
   topControlBar: {
     flexDirection: 'row',
@@ -159,9 +163,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: SPACING.md,
     paddingVertical: 10,
-    backgroundColor: '#e4dfd6',
+    backgroundColor: colors.surfaceContainer,
     borderBottomWidth: 1,
-    borderBottomColor: '#d6cfc3',
+    borderBottomColor: colors.surfaceContainerHighest,
     flexWrap: 'wrap',
     gap: 8,
   },
@@ -174,11 +178,11 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 0.8,
-    color: '#6e655f',
+    color: colors.onSurfaceVariant,
   },
   toggleGroup: {
     flexDirection: 'row',
-    backgroundColor: '#dad3c8',
+    backgroundColor: colors.surfaceContainerHigh,
     borderRadius: RADIUS.full,
     padding: 2,
     gap: 2,
@@ -192,26 +196,26 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.full,
   },
   toggleBtnActive: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: colors.primary,
   },
   toggleBtnText: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#524b46',
+    color: colors.onSurfaceVariant,
   },
   toggleBtnTextActive: {
-    color: COLORS.onPrimary,
+    color: colors.onPrimary,
   },
   expoGuideBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surfaceContainerLowest,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: RADIUS.full,
     borderWidth: 1,
-    borderColor: '#d0c4be',
+    borderColor: colors.outlineVariant,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -220,7 +224,7 @@ const styles = StyleSheet.create({
   expoGuideBtnText: {
     fontSize: 12,
     fontWeight: '600',
-    color: COLORS.secondary,
+    color: colors.secondary,
   },
   fluidContainer: {
     flex: 1,
@@ -240,7 +244,7 @@ const styles = StyleSheet.create({
     maxWidth: 400,
     height: '100%',
     maxHeight: 840,
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
     overflow: 'hidden',
     shadowColor: '#2b231d',
     shadowOffset: { width: 0, height: 16 },
@@ -259,7 +263,7 @@ const styles = StyleSheet.create({
   },
   iosStatusBar: {
     height: 44,
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -269,7 +273,7 @@ const styles = StyleSheet.create({
   },
   androidStatusBar: {
     height: 36,
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -307,7 +311,7 @@ const styles = StyleSheet.create({
   },
   homeIndicatorRow: {
     height: 20,
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: 4,
@@ -316,7 +320,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 4,
     borderRadius: 2,
-    backgroundColor: '#1c1c18',
+    backgroundColor: colors.onSurface,
     opacity: 0.3,
   },
-});
+  });

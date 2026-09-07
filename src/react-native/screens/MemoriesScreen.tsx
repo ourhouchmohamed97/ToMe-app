@@ -8,7 +8,8 @@ import {
   TextInput,
   Image,
 } from 'react-native';
-import { COLORS, SPACING, RADIUS } from '../styles/theme';
+import { SPACING, RADIUS, ThemeColors } from '../styles/theme';
+import { useTheme } from '../styles/ThemeContext';
 import { ToMeIcon } from '../components/ToMeIcon';
 import { MemoryItem } from '../../types';
 
@@ -23,6 +24,8 @@ export const MemoriesScreen: React.FC<MemoriesScreenProps> = ({
   onOpenMemoryDetail,
   onOpenPhotoLightbox,
 }) => {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'photo' | 'voice' | 'thought'>('all');
   const [playingId, setPlayingId] = useState<string | null>(null);
@@ -61,16 +64,16 @@ export const MemoriesScreen: React.FC<MemoriesScreenProps> = ({
       >
         {/* Search Bar */}
         <View style={styles.searchBar}>
-          <ToMeIcon name="search" size={18} color={COLORS.outline} />
+          <ToMeIcon name="search" size={18} color={colors.outline} />
           <TextInput
             value={searchQuery}
             onChangeText={setSearchQuery}
             placeholder="Search words, feelings, dates…"
-            placeholderTextColor={COLORS.outline}
+            placeholderTextColor={colors.outline}
             style={styles.searchInput}
           />
           <TouchableOpacity style={styles.searchTuneBtn}>
-            <ToMeIcon name="tune" size={18} color={COLORS.onSurfaceVariant} />
+            <ToMeIcon name="tune" size={18} color={colors.onSurfaceVariant} />
           </TouchableOpacity>
         </View>
 
@@ -159,7 +162,7 @@ export const MemoriesScreen: React.FC<MemoriesScreenProps> = ({
                             <ToMeIcon
                               name={playingId === mem.id ? 'pause' : 'play_arrow'}
                               size={18}
-                              color={COLORS.onPrimary}
+                              color={colors.onPrimary}
                             />
                           </TouchableOpacity>
 
@@ -210,11 +213,11 @@ export const MemoriesScreen: React.FC<MemoriesScreenProps> = ({
                               <ToMeIcon
                                 name={favorites[mem.id] ? 'favorite' : 'favorite_border'}
                                 size={18}
-                                color={favorites[mem.id] ? COLORS.secondary : COLORS.outline}
+                                color={favorites[mem.id] ? colors.secondary : colors.outline}
                               />
                             </TouchableOpacity>
                             <TouchableOpacity>
-                              <ToMeIcon name="share" size={18} color={COLORS.outline} />
+                              <ToMeIcon name="share" size={18} color={colors.outline} />
                             </TouchableOpacity>
                           </View>
                         </View>
@@ -259,11 +262,11 @@ export const MemoriesScreen: React.FC<MemoriesScreenProps> = ({
                           <ToMeIcon
                             name={favorites[mem.id] ? 'favorite' : 'favorite_border'}
                             size={18}
-                            color={favorites[mem.id] ? COLORS.secondary : COLORS.outline}
+                            color={favorites[mem.id] ? colors.secondary : colors.outline}
                           />
                         </TouchableOpacity>
                         <TouchableOpacity>
-                          <ToMeIcon name="share" size={18} color={COLORS.outline} />
+                          <ToMeIcon name="share" size={18} color={colors.outline} />
                         </TouchableOpacity>
                       </View>
                     </View>
@@ -276,7 +279,7 @@ export const MemoriesScreen: React.FC<MemoriesScreenProps> = ({
 
         {/* Peaceful Footer */}
         <View style={styles.footer}>
-          <ToMeIcon name="spa" size={18} color={COLORS.outline} />
+          <ToMeIcon name="spa" size={18} color={colors.outline} />
           <Text style={styles.footerText}>
             Your garden of memories is growing quietly.
           </Text>
@@ -286,10 +289,11 @@ export const MemoriesScreen: React.FC<MemoriesScreenProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
   },
   scrollContent: {
     paddingHorizontal: SPACING.md,
@@ -299,19 +303,19 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     borderRadius: RADIUS.full,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: 'rgba(229, 226, 220, 0.8)',
+    borderColor: colors.surfaceContainerHighest,
     marginBottom: 12,
     gap: 8,
   },
   searchInput: {
     flex: 1,
     fontSize: 14,
-    color: COLORS.onSurface,
+    color: colors.onSurface,
   },
   searchTuneBtn: {
     padding: 4,
@@ -325,21 +329,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: RADIUS.full,
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     borderWidth: 1,
-    borderColor: 'rgba(229, 226, 220, 0.8)',
+    borderColor: colors.surfaceContainerHighest,
   },
   filterPillActive: {
-    backgroundColor: COLORS.secondary,
-    borderColor: COLORS.secondary,
+    backgroundColor: colors.secondary,
+    borderColor: colors.secondary,
   },
   filterText: {
     fontSize: 12,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     fontWeight: '500',
   },
   filterTextActive: {
-    color: COLORS.onSecondary,
+    color: colors.onSecondary,
   },
   timelineContainer: {
     gap: SPACING.lg,
@@ -358,24 +362,24 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Literata',
     fontWeight: '600',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
   },
   monthCountBadge: {
-    backgroundColor: COLORS.surfaceContainer,
+    backgroundColor: colors.surfaceContainer,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: RADIUS.full,
   },
   monthCountText: {
     fontSize: 11,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
   },
   memoryCard: {
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     borderRadius: RADIUS.xl,
     padding: SPACING.md,
     borderWidth: 1,
-    borderColor: 'rgba(229, 226, 220, 0.7)',
+    borderColor: colors.surfaceContainerHighest,
     shadowColor: '#463228',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.04,
@@ -391,12 +395,12 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 0.8,
-    color: COLORS.secondary,
+    color: colors.secondary,
     textTransform: 'uppercase',
   },
   metaDate: {
     fontSize: 11,
-    color: COLORS.outline,
+    color: colors.outline,
   },
   photoBlock: {
     gap: 8,
@@ -424,12 +428,12 @@ const styles = StyleSheet.create({
     fontSize: 9,
     fontWeight: '700',
     letterSpacing: 0.5,
-    color: COLORS.onPrimary,
+    color: colors.onPrimary,
   },
   photoQuoteText: {
     fontSize: 14,
     fontStyle: 'italic',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
   },
   viewConversationLink: {
     alignSelf: 'flex-start',
@@ -437,7 +441,7 @@ const styles = StyleSheet.create({
   },
   linkText: {
     fontSize: 12,
-    color: COLORS.secondary,
+    color: colors.secondary,
     fontWeight: '600',
   },
   voiceBlock: {
@@ -446,7 +450,7 @@ const styles = StyleSheet.create({
   voiceHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.surfaceContainerLow,
+    backgroundColor: colors.surfaceContainerLow,
     padding: 10,
     borderRadius: RADIUS.lg,
     gap: 10,
@@ -455,7 +459,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: COLORS.secondary,
+    backgroundColor: colors.secondary,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -472,18 +476,18 @@ const styles = StyleSheet.create({
   },
   waveformBar: {
     width: 3,
-    backgroundColor: COLORS.outlineVariant,
+    backgroundColor: colors.outlineVariant,
     borderRadius: 1.5,
   },
   barActive: {
-    backgroundColor: COLORS.secondary,
+    backgroundColor: colors.secondary,
   },
   audioDurationText: {
     fontSize: 11,
-    color: COLORS.outline,
+    color: colors.outline,
   },
   transcriptBox: {
-    backgroundColor: COLORS.surfaceContainerLow,
+    backgroundColor: colors.surfaceContainerLow,
     padding: 10,
     borderRadius: RADIUS.md,
     gap: 4,
@@ -492,12 +496,12 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 0.8,
-    color: COLORS.outline,
+    color: colors.outline,
   },
   transcriptText: {
     fontSize: 13,
     fontStyle: 'italic',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
   },
   thoughtBlock: {
     gap: 10,
@@ -506,7 +510,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Literata',
     fontStyle: 'italic',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     lineHeight: 24,
   },
   thoughtFooterRow: {
@@ -516,14 +520,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   reflectionBtn: {
-    backgroundColor: COLORS.surfaceContainer,
+    backgroundColor: colors.surfaceContainer,
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: RADIUS.full,
   },
   reflectionBtnText: {
     fontSize: 12,
-    color: COLORS.secondary,
+    color: colors.secondary,
     fontWeight: '600',
   },
   thoughtIcons: {
@@ -537,8 +541,8 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 13,
-    color: COLORS.outline,
+    color: colors.outline,
     fontFamily: 'Literata',
     fontStyle: 'italic',
   },
-});
+  });

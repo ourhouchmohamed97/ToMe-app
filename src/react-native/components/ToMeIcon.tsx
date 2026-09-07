@@ -67,6 +67,8 @@ const ICON_MAP: Record<string, string> = {
   warning: 'warning',
   spa: 'spa',
   chevron_right: 'chevron_right',
+  dark_mode: 'dark_mode',
+  light_mode: 'light_mode',
 };
 
 export const ToMeIcon: React.FC<ToMeIconProps> = ({

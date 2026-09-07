@@ -9,7 +9,9 @@ import {
   Image,
   Modal,
 } from 'react-native';
-import { COLORS, SPACING, RADIUS } from '../styles/theme';
+import { SPACING, RADIUS, ThemeColors } from '../styles/theme';
+import { useTheme } from '../styles/ThemeContext';
+import type { ThemeMode } from '../styles/ThemeContext';
 import { ToMeIcon } from '../components/ToMeIcon';
 import { ProfilePreferences } from '../../types';
 import { ASSETS } from '../../data/mockData';
@@ -29,8 +31,11 @@ export const MeScreen: React.FC<MeScreenProps> = ({
   onEraseJournal,
   onLogout,
 }) => {
+  const { colors, mode, setMode } = useTheme();
+  const styles = createStyles(colors);
   const [showTimeModal, setShowTimeModal] = useState(false);
   const [showFreqModal, setShowFreqModal] = useState(false);
+  const [showThemeModal, setShowThemeModal] = useState(false);
   const [showEraseModal, setShowEraseModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [toastText, setToastText] = useState<string | null>(null);
@@ -46,6 +51,11 @@ export const MeScreen: React.FC<MeScreenProps> = ({
     'Occasional & surprise',
     'Weekly reflection',
     'Monthly time capsule',
+  ];
+  const themeOptions: { mode: ThemeMode; label: string }[] = [
+    { mode: 'system', label: 'System' },
+    { mode: 'light', label: 'Light' },
+    { mode: 'dark', label: 'Dark' },
   ];
 
   return (
@@ -93,14 +103,14 @@ export const MeScreen: React.FC<MeScreenProps> = ({
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>YOUR TOME</Text>
-            <ToMeIcon name="lock" size={16} color={COLORS.outline} />
+            <ToMeIcon name="lock" size={16} color={colors.outline} />
           </View>
 
           <View style={styles.cardGroup}>
             <View style={styles.rowItem}>
               <View style={styles.rowLeft}>
                 <View style={styles.iconCircle}>
-                  <ToMeIcon name="calendar_today" size={16} color={COLORS.onSurfaceVariant} />
+                  <ToMeIcon name="calendar_today" size={16} color={colors.onSurfaceVariant} />
                 </View>
                 <View>
                   <Text style={styles.rowTitle}>Journal since</Text>
@@ -115,7 +125,7 @@ export const MeScreen: React.FC<MeScreenProps> = ({
             <View style={styles.rowItem}>
               <View style={styles.rowLeft}>
                 <View style={styles.iconCircle}>
-                  <ToMeIcon name="shield" size={16} color={COLORS.secondary} />
+                  <ToMeIcon name="shield" size={16} color={colors.secondary} />
                 </View>
                 <View>
                   <Text style={styles.rowTitle}>Vault encryption</Text>
@@ -133,7 +143,7 @@ export const MeScreen: React.FC<MeScreenProps> = ({
             <View style={styles.rowItem}>
               <View style={styles.rowLeft}>
                 <View style={styles.iconCircle}>
-                  <ToMeIcon name="forum" size={16} color={COLORS.onSurfaceVariant} />
+                  <ToMeIcon name="forum" size={16} color={colors.onSurfaceVariant} />
                 </View>
                 <View>
                   <Text style={styles.rowTitle}>Memory delivery style</Text>
@@ -149,7 +159,7 @@ export const MeScreen: React.FC<MeScreenProps> = ({
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>PREFERENCES</Text>
-            <ToMeIcon name="tune" size={16} color={COLORS.outline} />
+            <ToMeIcon name="tune" size={16} color={colors.outline} />
           </View>
 
           <View style={styles.cardGroup}>
@@ -157,7 +167,7 @@ export const MeScreen: React.FC<MeScreenProps> = ({
             <View style={styles.rowItem}>
               <View style={styles.rowLeft}>
                 <View style={styles.iconCircle}>
-                  <ToMeIcon name="bedtime" size={16} color={COLORS.onSurfaceVariant} />
+                  <ToMeIcon name="bedtime" size={16} color={colors.onSurfaceVariant} />
                 </View>
                 <View>
                   <Text style={styles.rowTitle}>Daily check-in</Text>
@@ -170,8 +180,8 @@ export const MeScreen: React.FC<MeScreenProps> = ({
                   onUpdateProfile({ dailyCheckIn: val });
                   showToast(val ? 'Daily check-in enabled' : 'Daily check-in paused');
                 }}
-                trackColor={{ false: COLORS.surfaceContainerHighest, true: COLORS.secondaryFixed }}
-                thumbColor={profile.dailyCheckIn ? COLORS.secondary : COLORS.surfaceContainerLowest}
+                trackColor={{ false: colors.surfaceContainerHighest, true: colors.secondaryFixed }}
+                thumbColor={profile.dailyCheckIn ? colors.secondary : colors.surfaceContainerLowest}
               />
             </View>
 
@@ -181,7 +191,7 @@ export const MeScreen: React.FC<MeScreenProps> = ({
             <View style={styles.rowItem}>
               <View style={styles.rowLeft}>
                 <View style={styles.iconCircle}>
-                  <ToMeIcon name="magic_button" size={16} color={COLORS.onSurfaceVariant} />
+                  <ToMeIcon name="magic_button" size={16} color={colors.onSurfaceVariant} />
                 </View>
                 <View>
                   <Text style={styles.rowTitle}>Memory reminders</Text>
@@ -194,8 +204,8 @@ export const MeScreen: React.FC<MeScreenProps> = ({
                   onUpdateProfile({ memoryReminders: val });
                   showToast(val ? 'Memory reminders active' : 'Memory reminders paused');
                 }}
-                trackColor={{ false: COLORS.surfaceContainerHighest, true: COLORS.secondaryFixed }}
-                thumbColor={profile.memoryReminders ? COLORS.secondary : COLORS.surfaceContainerLowest}
+                trackColor={{ false: colors.surfaceContainerHighest, true: colors.secondaryFixed }}
+                thumbColor={profile.memoryReminders ? colors.secondary : colors.surfaceContainerLowest}
               />
             </View>
 
@@ -209,7 +219,7 @@ export const MeScreen: React.FC<MeScreenProps> = ({
             >
               <View style={styles.rowLeft}>
                 <View style={styles.iconCircle}>
-                  <ToMeIcon name="schedule" size={16} color={COLORS.onSurfaceVariant} />
+                  <ToMeIcon name="schedule" size={16} color={colors.onSurfaceVariant} />
                 </View>
                 <View>
                   <Text style={styles.rowTitle}>Preferred check-in time</Text>
@@ -218,7 +228,7 @@ export const MeScreen: React.FC<MeScreenProps> = ({
               </View>
               <View style={styles.rowRightWithChevron}>
                 <Text style={styles.rowValue}>{profile.checkInTime}</Text>
-                <ToMeIcon name="chevron_right" size={18} color={COLORS.outline} />
+                <ToMeIcon name="chevron_right" size={18} color={colors.outline} />
               </View>
             </TouchableOpacity>
 
@@ -232,7 +242,7 @@ export const MeScreen: React.FC<MeScreenProps> = ({
             >
               <View style={styles.rowLeft}>
                 <View style={styles.iconCircle}>
-                  <ToMeIcon name="cyclone" size={16} color={COLORS.onSurfaceVariant} />
+                  <ToMeIcon name="cyclone" size={16} color={colors.onSurfaceVariant} />
                 </View>
                 <View>
                   <Text style={styles.rowTitle}>Frequency</Text>
@@ -241,7 +251,32 @@ export const MeScreen: React.FC<MeScreenProps> = ({
               </View>
               <View style={styles.rowRightWithChevron}>
                 <Text style={styles.rowValue}>{profile.frequency}</Text>
-                <ToMeIcon name="chevron_right" size={18} color={COLORS.outline} />
+                <ToMeIcon name="chevron_right" size={18} color={colors.outline} />
+              </View>
+            </TouchableOpacity>
+
+            <View style={styles.rowDivider} />
+
+            {/* Appearance / Theme */}
+            <TouchableOpacity
+              onPress={() => setShowThemeModal(true)}
+              style={styles.rowItem}
+              activeOpacity={0.7}
+            >
+              <View style={styles.rowLeft}>
+                <View style={styles.iconCircle}>
+                  <ToMeIcon name="dark_mode" size={16} color={colors.onSurfaceVariant} />
+                </View>
+                <View>
+                  <Text style={styles.rowTitle}>Appearance</Text>
+                  <Text style={styles.rowSubtitle}>Light, dark, or system</Text>
+                </View>
+              </View>
+              <View style={styles.rowRightWithChevron}>
+                <Text style={styles.rowValue}>
+                  {mode === 'system' ? 'System' : mode === 'dark' ? 'Dark' : 'Light'}
+                </Text>
+                <ToMeIcon name="chevron_right" size={18} color={colors.outline} />
               </View>
             </TouchableOpacity>
           </View>
@@ -251,14 +286,14 @@ export const MeScreen: React.FC<MeScreenProps> = ({
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>PRIVACY & CONTROL</Text>
-            <ToMeIcon name="verified_user" size={16} color={COLORS.outline} />
+            <ToMeIcon name="verified_user" size={16} color={colors.outline} />
           </View>
 
           <View style={styles.cardGroup}>
             <View style={styles.rowItem}>
               <View style={styles.rowLeft}>
                 <View style={styles.iconCircle}>
-                  <ToMeIcon name="visibility_off" size={16} color={COLORS.onSurfaceVariant} />
+                  <ToMeIcon name="visibility_off" size={16} color={colors.onSurfaceVariant} />
                 </View>
                 <View>
                   <Text style={styles.rowTitle}>Private by default</Text>
@@ -275,14 +310,14 @@ export const MeScreen: React.FC<MeScreenProps> = ({
             <TouchableOpacity onPress={onExportData} style={styles.rowItem} activeOpacity={0.7}>
               <View style={styles.rowLeft}>
                 <View style={styles.iconCircle}>
-                  <ToMeIcon name="download" size={16} color={COLORS.onSurfaceVariant} />
+                  <ToMeIcon name="download" size={16} color={colors.onSurfaceVariant} />
                 </View>
                 <View>
                   <Text style={styles.rowTitle}>Export all memories</Text>
                   <Text style={styles.rowSubtitle}>Download JSON & photos</Text>
                 </View>
               </View>
-              <ToMeIcon name="file_download" size={18} color={COLORS.outline} />
+              <ToMeIcon name="file_download" size={18} color={colors.outline} />
             </TouchableOpacity>
 
             <View style={styles.rowDivider} />
@@ -294,14 +329,14 @@ export const MeScreen: React.FC<MeScreenProps> = ({
             >
               <View style={styles.rowLeft}>
                 <View style={[styles.iconCircle, styles.iconCircleError]}>
-                  <ToMeIcon name="delete_forever" size={16} color={COLORS.error} />
+                  <ToMeIcon name="delete_forever" size={16} color={colors.error} />
                 </View>
                 <View>
                   <Text style={[styles.rowTitle, styles.errorText]}>Erase journal</Text>
                   <Text style={styles.rowSubtitle}>Permanently delete all data</Text>
                 </View>
               </View>
-              <ToMeIcon name="chevron_right" size={18} color={COLORS.error} />
+              <ToMeIcon name="chevron_right" size={18} color={colors.error} />
             </TouchableOpacity>
 
             <View style={styles.rowDivider} />
@@ -313,21 +348,21 @@ export const MeScreen: React.FC<MeScreenProps> = ({
             >
               <View style={styles.rowLeft}>
                 <View style={styles.iconCircle}>
-                  <ToMeIcon name="logout" size={16} color={COLORS.onSurfaceVariant} />
+                  <ToMeIcon name="logout" size={16} color={colors.onSurfaceVariant} />
                 </View>
                 <View>
                   <Text style={styles.rowTitle}>Log out</Text>
                   <Text style={styles.rowSubtitle}>Return to the sign-in screen</Text>
                 </View>
               </View>
-              <ToMeIcon name="chevron_right" size={18} color={COLORS.outline} />
+              <ToMeIcon name="chevron_right" size={18} color={colors.outline} />
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Footer */}
         <View style={styles.footer}>
-          <ToMeIcon name="spa" size={18} color={COLORS.outline} />
+          <ToMeIcon name="spa" size={18} color={colors.outline} />
           <Text style={styles.footerText}>
             ToMe v1.0 · A quiet space for your present and future self.
           </Text>
@@ -358,7 +393,7 @@ export const MeScreen: React.FC<MeScreenProps> = ({
                       {time}
                     </Text>
                     {profile.checkInTime === time && (
-                      <ToMeIcon name="check" size={16} color={COLORS.onSecondary} />
+                      <ToMeIcon name="check" size={16} color={colors.onSecondary} />
                     )}
                   </TouchableOpacity>
                 </React.Fragment>
@@ -395,12 +430,54 @@ export const MeScreen: React.FC<MeScreenProps> = ({
                       {freq}
                     </Text>
                     {profile.frequency === freq && (
-                      <ToMeIcon name="check" size={16} color={COLORS.onSecondary} />
+                      <ToMeIcon name="check" size={16} color={colors.onSecondary} />
                     )}
                   </TouchableOpacity>
                 </React.Fragment>
               ))}
               <TouchableOpacity onPress={() => setShowFreqModal(false)} style={styles.modalCancelBtn}>
+                <Text style={styles.modalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Theme Picker Modal */}
+        <Modal visible={showThemeModal} transparent animationType="fade">
+          <View style={styles.modalBackdrop}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Appearance</Text>
+              <Text style={styles.modalSubtitle}>
+                Choose how ToMe looks. System follows your device settings.
+              </Text>
+              {themeOptions.map((option) => (
+                <React.Fragment key={option.mode}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setMode(option.mode);
+                      setShowThemeModal(false);
+                      showToast(`Appearance set to ${option.label}`);
+                    }}
+                    style={[
+                      styles.modalOption,
+                      mode === option.mode && styles.modalOptionActive,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.modalOptionText,
+                        mode === option.mode && styles.modalOptionTextActive,
+                      ]}
+                    >
+                      {option.label}
+                    </Text>
+                    {mode === option.mode && (
+                      <ToMeIcon name="check" size={16} color={colors.onSecondary} />
+                    )}
+                  </TouchableOpacity>
+                </React.Fragment>
+              ))}
+              <TouchableOpacity onPress={() => setShowThemeModal(false)} style={styles.modalCancelBtn}>
                 <Text style={styles.modalCancelText}>Cancel</Text>
               </TouchableOpacity>
             </View>
@@ -469,7 +546,7 @@ export const MeScreen: React.FC<MeScreenProps> = ({
         {/* Toast Feedback */}
         {toastText && (
           <View style={styles.toast}>
-            <ToMeIcon name="check_circle" size={16} color={COLORS.secondaryFixed} />
+            <ToMeIcon name="check_circle" size={16} color={colors.secondaryFixed} />
             <Text style={styles.toastText}>{toastText}</Text>
           </View>
         )}
@@ -478,10 +555,11 @@ export const MeScreen: React.FC<MeScreenProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
   },
   scrollContent: {
     paddingHorizontal: SPACING.md,
@@ -489,11 +567,11 @@ const styles = StyleSheet.create({
     paddingBottom: SPACING.lg,
   },
   profileCard: {
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     borderRadius: RADIUS.xl,
     padding: SPACING.lg,
     borderWidth: 1,
-    borderColor: 'rgba(229, 226, 220, 0.8)',
+    borderColor: colors.surfaceContainerHighest,
     shadowColor: '#463228',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.04,
@@ -513,7 +591,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: COLORS.surfaceContainer,
+    backgroundColor: colors.surfaceContainer,
   },
   avatarStatusDot: {
     position: 'absolute',
@@ -522,9 +600,9 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 7,
-    backgroundColor: COLORS.secondary,
+    backgroundColor: colors.secondary,
     borderWidth: 2,
-    borderColor: COLORS.surfaceContainerLowest,
+    borderColor: colors.surfaceContainerLowest,
   },
   profileInfo: {
     flex: 1,
@@ -533,20 +611,20 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontFamily: 'Literata',
     fontWeight: '600',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
   },
   profileSubtitle: {
     fontSize: 13,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     marginTop: 2,
   },
   statsGrid: {
     flexDirection: 'row',
-    backgroundColor: COLORS.surfaceContainerLow,
+    backgroundColor: colors.surfaceContainerLow,
     borderRadius: RADIUS.lg,
     paddingVertical: SPACING.sm,
     borderWidth: 1,
-    borderColor: COLORS.surfaceContainerHighest,
+    borderColor: colors.surfaceContainerHighest,
   },
   statBox: {
     flex: 1,
@@ -555,16 +633,16 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 20,
     fontWeight: '600',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
   },
   statNumberSecondary: {
-    color: COLORS.secondary,
+    color: colors.secondary,
   },
   statLabel: {
     fontSize: 9,
     fontWeight: '700',
     letterSpacing: 0.5,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     marginTop: 4,
   },
   section: {
@@ -581,13 +659,13 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 1,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
   },
   cardGroup: {
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     borderRadius: RADIUS.xl,
     borderWidth: 1,
-    borderColor: 'rgba(229, 226, 220, 0.8)',
+    borderColor: colors.surfaceContainerHighest,
     overflow: 'hidden',
   },
   rowItem: {
@@ -606,26 +684,26 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: COLORS.surfaceContainer,
+    backgroundColor: colors.surfaceContainer,
     alignItems: 'center',
     justifyContent: 'center',
   },
   iconCircleError: {
-    backgroundColor: COLORS.errorContainer,
+    backgroundColor: colors.errorContainer,
   },
   rowTitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
   },
   rowSubtitle: {
     fontSize: 12,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     marginTop: 1,
   },
   rowValue: {
     fontSize: 13,
-    color: COLORS.onSurface,
+    color: colors.onSurface,
   },
   rowRightWithChevron: {
     flexDirection: 'row',
@@ -634,14 +712,14 @@ const styles = StyleSheet.create({
   },
   rowDivider: {
     height: 1,
-    backgroundColor: COLORS.surfaceContainerHigh,
+    backgroundColor: colors.surfaceContainerHigh,
     marginHorizontal: SPACING.md,
   },
   badgePill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: COLORS.surfaceContainer,
+    backgroundColor: colors.surfaceContainer,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: RADIUS.full,
@@ -650,26 +728,26 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: COLORS.secondary,
+    backgroundColor: colors.secondary,
   },
   badgeText: {
     fontSize: 11,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     fontWeight: '500',
   },
   alwaysOnBadge: {
-    backgroundColor: COLORS.secondaryFixed,
+    backgroundColor: colors.secondaryFixed,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: RADIUS.full,
   },
   alwaysOnText: {
     fontSize: 11,
-    color: COLORS.onSecondaryFixedVariant,
+    color: colors.onSecondaryFixedVariant,
     fontWeight: '600',
   },
   errorText: {
-    color: COLORS.error,
+    color: colors.error,
   },
   footer: {
     alignItems: 'center',
@@ -678,7 +756,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 12,
-    color: COLORS.outline,
+    color: colors.outline,
     textAlign: 'center',
   },
   modalBackdrop: {
@@ -689,24 +767,24 @@ const styles = StyleSheet.create({
     padding: SPACING.md,
   },
   modalContent: {
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     borderRadius: RADIUS.xl,
     padding: SPACING.lg,
     width: '100%',
     maxWidth: 340,
     borderWidth: 1,
-    borderColor: COLORS.surfaceContainerHighest,
+    borderColor: colors.surfaceContainerHighest,
   },
   modalTitle: {
     fontSize: 18,
     fontFamily: 'Literata',
     fontWeight: '600',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     marginBottom: 4,
   },
   modalSubtitle: {
     fontSize: 13,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     marginBottom: 16,
   },
   modalOption: {
@@ -717,17 +795,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: RADIUS.md,
     marginBottom: 6,
-    backgroundColor: COLORS.surfaceContainerLow,
+    backgroundColor: colors.surfaceContainerLow,
   },
   modalOptionActive: {
-    backgroundColor: COLORS.secondary,
+    backgroundColor: colors.secondary,
   },
   modalOptionText: {
     fontSize: 14,
-    color: COLORS.onSurface,
+    color: colors.onSurface,
   },
   modalOptionTextActive: {
-    color: COLORS.onSecondary,
+    color: colors.onSecondary,
     fontWeight: '600',
   },
   modalCancelBtn: {
@@ -737,7 +815,7 @@ const styles = StyleSheet.create({
   },
   modalCancelText: {
     fontSize: 13,
-    color: COLORS.outline,
+    color: colors.outline,
   },
   modalActionRow: {
     flexDirection: 'row',
@@ -746,33 +824,33 @@ const styles = StyleSheet.create({
   },
   modalBtnKeep: {
     flex: 1,
-    backgroundColor: COLORS.surfaceContainer,
+    backgroundColor: colors.surfaceContainer,
     paddingVertical: 12,
     borderRadius: RADIUS.full,
     alignItems: 'center',
   },
   modalBtnKeepText: {
     fontSize: 13,
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     fontWeight: '500',
   },
   modalBtnDelete: {
     flex: 1,
-    backgroundColor: COLORS.error,
+    backgroundColor: colors.error,
     paddingVertical: 12,
     borderRadius: RADIUS.full,
     alignItems: 'center',
   },
   modalBtnDeleteText: {
     fontSize: 13,
-    color: COLORS.onPrimary,
+    color: colors.onPrimary,
     fontWeight: '600',
   },
   toast: {
     position: 'absolute',
     bottom: 20,
     alignSelf: 'center',
-    backgroundColor: COLORS.inverseSurface,
+    backgroundColor: colors.inverseSurface,
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: RADIUS.full,
@@ -782,6 +860,6 @@ const styles = StyleSheet.create({
   },
   toastText: {
     fontSize: 13,
-    color: COLORS.inverseOnSurface,
+    color: colors.inverseOnSurface,
   },
-});
+  });

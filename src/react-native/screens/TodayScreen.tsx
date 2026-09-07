@@ -9,7 +9,8 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
-import { COLORS, SPACING, RADIUS } from '../styles/theme';
+import { SPACING, RADIUS, ThemeColors } from '../styles/theme';
+import { useTheme } from '../styles/ThemeContext';
 import { ToMeIcon } from '../components/ToMeIcon';
 import { ChatMessage } from '../../types';
 import { ASSETS } from '../../data/mockData';
@@ -27,6 +28,8 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
   onOpenEveningCheckin,
   onOpenPhotoLightbox,
 }) => {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const [inputText, setInputText] = useState('');
   const [isRecordingVoice, setIsRecordingVoice] = useState(false);
   const [voiceSeconds, setVoiceSeconds] = useState(0);
@@ -81,7 +84,7 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
             activeOpacity={0.85}
           >
             <View style={styles.bannerIconContainer}>
-              <ToMeIcon name="bedtime" size={16} color={COLORS.onSecondary} />
+              <ToMeIcon name="bedtime" size={16} color={colors.onSecondary} />
             </View>
             <View style={styles.bannerTextContainer}>
               <Text style={styles.bannerTitle}>EVENING CHECK-IN AVAILABLE</Text>
@@ -89,7 +92,7 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
                 Before today ends… Take a slow breath and review moments.
               </Text>
             </View>
-            <ToMeIcon name="arrow_forward" size={18} color={COLORS.secondary} />
+            <ToMeIcon name="arrow_forward" size={18} color={colors.secondary} />
           </TouchableOpacity>
         </View>
 
@@ -125,14 +128,14 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
                             <ToMeIcon
                               name="location_on"
                               size={14}
-                              color={COLORS.secondaryContainer}
+                              color={colors.secondaryContainer}
                             />
                             <Text style={styles.locationText}>
                               {msg.photoLocation || 'Ocean Bluff · 6:48 PM'}
                             </Text>
                           </View>
                           <View style={styles.twilightCircle}>
-                            <ToMeIcon name="wb_twilight" size={14} color={COLORS.onPrimary} />
+                            <ToMeIcon name="wb_twilight" size={14} color={colors.onPrimary} />
                           </View>
                         </View>
                       </TouchableOpacity>
@@ -169,11 +172,11 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
                 <React.Fragment key={msg.id}>
                   <View style={styles.tomeMessageRow}>
                     <View style={styles.tomeAvatarSmall}>
-                      <ToMeIcon name="lock_clock" size={14} color={COLORS.onSecondaryFixedVariant} />
+                      <ToMeIcon name="lock_clock" size={14} color={colors.onSecondaryFixedVariant} />
                     </View>
                     <View style={styles.sealedCapsuleBubble}>
                       <View style={styles.sealedBadgeRow}>
-                        <ToMeIcon name="check_circle" size={14} color={COLORS.secondary} />
+                        <ToMeIcon name="check_circle" size={14} color={colors.secondary} />
                         <Text style={styles.sealedBadgeText}>TIME CAPSULE SEALED</Text>
                       </View>
                       <Text style={styles.sealedMessageText}>{msg.text}</Text>
@@ -191,7 +194,7 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
                     <ToMeIcon
                       name={msg.isInitial ? 'temp_preferences_custom' : 'auto_awesome'}
                       size={14}
-                      color={COLORS.onSecondaryFixedVariant}
+                      color={colors.onSecondaryFixedVariant}
                     />
                   </View>
                   <View style={styles.tomeBubble}>
@@ -250,7 +253,7 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
               Sunset snapshot ready to seal
             </Text>
             <TouchableOpacity onPress={() => setSelectedPhoto(null)}>
-              <ToMeIcon name="close" size={16} color={COLORS.onSurfaceVariant} />
+              <ToMeIcon name="close" size={16} color={colors.onSurfaceVariant} />
             </TouchableOpacity>
           </View>
         ) : null}
@@ -279,7 +282,7 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
               Sunset snapshot ready to seal
             </Text>
             <TouchableOpacity onPress={() => setSelectedPhoto(null)}>
-              <ToMeIcon name="close" size={16} color={COLORS.onSurfaceVariant} />
+              <ToMeIcon name="close" size={16} color={colors.onSurfaceVariant} />
             </TouchableOpacity>
           </View>
         ) : null}
@@ -292,14 +295,14 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
             }}
             style={styles.composerIconBtn}
           >
-            <ToMeIcon name="image" size={20} color={COLORS.onSurfaceVariant} />
+            <ToMeIcon name="image" size={20} color={colors.onSurfaceVariant} />
           </TouchableOpacity>
 
           <TextInput
             value={inputText}
             onChangeText={setInputText}
             placeholder="Write something to your future self…"
-            placeholderTextColor={COLORS.outline}
+            placeholderTextColor={colors.outline}
             style={styles.composerInput}
             returnKeyType="send"
             onSubmitEditing={handleSend}
@@ -312,7 +315,7 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
             <ToMeIcon
               name={isRecordingVoice ? 'stop' : 'mic'}
               size={20}
-              color={COLORS.secondary}
+              color={colors.secondary}
             />
           </TouchableOpacity>
 
@@ -322,7 +325,7 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
             activeOpacity={0.8}
           >
             <Text style={styles.sealButtonText}>Seal</Text>
-            <ToMeIcon name="arrow_upward" size={16} color={COLORS.onSecondary} />
+            <ToMeIcon name="arrow_upward" size={16} color={colors.onSecondary} />
           </TouchableOpacity>
         </View>
       </View>
@@ -330,10 +333,11 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
   },
   scrollContent: {
     paddingHorizontal: SPACING.md,
@@ -347,7 +351,7 @@ const styles = StyleSheet.create({
   temporalBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.surfaceContainerHigh,
+    backgroundColor: colors.surfaceContainerHigh,
     paddingHorizontal: 14,
     paddingVertical: 4,
     borderRadius: RADIUS.full,
@@ -358,20 +362,20 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: COLORS.secondary,
+    backgroundColor: colors.secondary,
   },
   temporalText: {
     fontSize: 11,
     fontWeight: '600',
     letterSpacing: 0.8,
     textTransform: 'uppercase',
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
   },
   headerSubtitle: {
     fontSize: 17,
     fontFamily: 'Literata',
     fontStyle: 'italic',
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     textAlign: 'center',
   },
   eveningBanner: {
@@ -379,7 +383,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.surfaceContainerLowest,
     borderWidth: 1,
     borderColor: 'rgba(254, 153, 122, 0.4)',
     borderRadius: RADIUS.lg,
@@ -393,7 +397,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: COLORS.secondary,
+    backgroundColor: colors.secondary,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
@@ -405,11 +409,11 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 0.5,
-    color: COLORS.secondary,
+    color: colors.secondary,
   },
   bannerSubtitle: {
     fontSize: 13,
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     marginTop: 1,
   },
   threadContainer: {
@@ -423,7 +427,7 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: COLORS.surfaceContainerHighest,
+    backgroundColor: colors.surfaceContainerHighest,
   },
   timeDividerText: {
     paddingHorizontal: 8,
@@ -431,7 +435,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'uppercase',
-    color: COLORS.outline,
+    color: colors.outline,
   },
   userMessageRow: {
     alignSelf: 'flex-end',
@@ -439,7 +443,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   userBubble: {
-    backgroundColor: COLORS.primaryContainer,
+    backgroundColor: colors.primaryContainer,
     borderRadius: RADIUS.lg,
     borderTopRightRadius: 4,
     paddingHorizontal: SPACING.md,
@@ -447,12 +451,12 @@ const styles = StyleSheet.create({
   },
   userBubbleText: {
     fontSize: 16,
-    color: COLORS.inverseOnSurface,
+    color: colors.inverseOnSurface,
     lineHeight: 24,
   },
   statusLabel: {
     fontSize: 11,
-    color: COLORS.outline,
+    color: colors.outline,
     marginTop: 4,
     marginRight: 4,
   },
@@ -466,29 +470,29 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: COLORS.secondaryFixed,
+    backgroundColor: colors.secondaryFixed,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 4,
   },
   tomeBubble: {
-    backgroundColor: COLORS.surfaceContainerLow,
+    backgroundColor: colors.surfaceContainerLow,
     borderRadius: RADIUS.lg,
     borderTopLeftRadius: 4,
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.sm,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: COLORS.surfaceContainerHighest,
+    borderColor: colors.surfaceContainerHighest,
   },
   tomeInitialText: {
     fontSize: 18,
     fontFamily: 'Literata',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     lineHeight: 24,
   },
   tomeBubbleText: {
     fontSize: 16,
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     lineHeight: 24,
   },
   userPhotoRow: {
@@ -497,12 +501,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   photoCapsuleContainer: {
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     padding: 8,
     borderRadius: RADIUS.lg,
     borderTopRightRadius: 4,
     borderWidth: 1,
-    borderColor: 'rgba(229, 226, 220, 0.7)',
+    borderColor: colors.surfaceContainerHighest,
     width: '100%',
   },
   photoWrapper: {
@@ -535,7 +539,7 @@ const styles = StyleSheet.create({
   },
   locationText: {
     fontSize: 11,
-    color: COLORS.onPrimary,
+    color: colors.onPrimary,
     fontWeight: '500',
   },
   twilightCircle: {
@@ -549,18 +553,18 @@ const styles = StyleSheet.create({
   photoCaption: {
     fontStyle: 'italic',
     fontSize: 14,
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     paddingHorizontal: 4,
     paddingTop: 8,
   },
   sealedCapsuleBubble: {
-    backgroundColor: COLORS.surfaceContainerLow,
+    backgroundColor: colors.surfaceContainerLow,
     borderRadius: RADIUS.lg,
     borderTopLeftRadius: 4,
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.sm,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: COLORS.surfaceContainerHighest,
+    borderColor: colors.surfaceContainerHighest,
     gap: 4,
   },
   sealedBadgeRow: {
@@ -571,12 +575,12 @@ const styles = StyleSheet.create({
   sealedBadgeText: {
     fontSize: 11,
     fontWeight: '700',
-    color: COLORS.secondary,
+    color: colors.secondary,
     letterSpacing: 0.8,
   },
   sealedMessageText: {
     fontSize: 14,
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     lineHeight: 22,
   },
   chipsScroll: {
@@ -589,12 +593,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: RADIUS.full,
     borderWidth: 1,
-    borderColor: 'rgba(229, 226, 220, 0.8)',
+    borderColor: colors.surfaceContainerHighest,
   },
   chipEmoji: {
     fontSize: 12,
@@ -602,12 +606,12 @@ const styles = StyleSheet.create({
   chipText: {
     fontSize: 12,
     fontWeight: '500',
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
   },
   attachmentPreview: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     padding: 8,
     borderRadius: RADIUS.md,
     marginBottom: 8,
@@ -623,12 +627,12 @@ const styles = StyleSheet.create({
   attachmentText: {
     flex: 1,
     fontSize: 13,
-    color: COLORS.onSurface,
+    color: colors.onSurface,
   },
   voiceBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.secondaryFixed,
+    backgroundColor: colors.secondaryFixed,
     padding: 10,
     borderRadius: RADIUS.md,
     marginBottom: 8,
@@ -638,34 +642,34 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: COLORS.secondary,
+    backgroundColor: colors.secondary,
   },
   voiceBannerText: {
     fontSize: 12,
     fontWeight: '600',
-    color: COLORS.onSecondaryFixedVariant,
+    color: colors.onSecondaryFixedVariant,
   },
   cancelText: {
     fontSize: 12,
-    color: COLORS.secondary,
+    color: colors.secondary,
     textDecorationLine: 'underline',
   },
   composerFooter: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
     paddingHorizontal: SPACING.md,
     paddingTop: SPACING.xs,
     paddingBottom: SPACING.xs,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: COLORS.surfaceContainerHighest,
+    borderTopColor: colors.surfaceContainerHighest,
   },
   composer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     borderRadius: RADIUS.md,
     padding: 6,
     borderWidth: 1,
-    borderColor: 'rgba(229, 226, 220, 0.9)',
+    borderColor: colors.surfaceContainerHighest,
     gap: 6,
   },
   composerIconBtn: {
@@ -676,18 +680,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   micActive: {
-    backgroundColor: COLORS.secondaryFixed,
+    backgroundColor: colors.secondaryFixed,
   },
   composerInput: {
     flex: 1,
     fontSize: 14,
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     paddingHorizontal: 6,
   },
   sealButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.secondary,
+    backgroundColor: colors.secondary,
     paddingHorizontal: 14,
     paddingVertical: 9,
     borderRadius: RADIUS.full,
@@ -696,6 +700,6 @@ const styles = StyleSheet.create({
   sealButtonText: {
     fontSize: 13,
     fontWeight: '600',
-    color: COLORS.onSecondary,
+    color: colors.onSecondary,
   },
-});
+  });

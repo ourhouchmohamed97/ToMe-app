@@ -8,7 +8,8 @@ import {
   TextInput,
   Image,
 } from 'react-native';
-import { COLORS, SPACING, RADIUS } from '../styles/theme';
+import { SPACING, RADIUS, ThemeColors } from '../styles/theme';
+import { useTheme } from '../styles/ThemeContext';
 import { ToMeIcon } from '../components/ToMeIcon';
 import { ASSETS } from '../../data/mockData';
 
@@ -23,6 +24,8 @@ export const EveningCheckinScreen: React.FC<EveningCheckinScreenProps> = ({
   onSavedReflection,
   onOpenPhotoLightbox,
 }) => {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const [reflectionText, setReflectionText] = useState('');
   const [sealPeriodIndex, setSealPeriodIndex] = useState(2); // 1 yr
   const [whisperAdded, setWhisperAdded] = useState(false);
@@ -55,14 +58,14 @@ export const EveningCheckinScreen: React.FC<EveningCheckinScreenProps> = ({
           style={styles.backPill}
           activeOpacity={0.8}
         >
-          <ToMeIcon name="arrow_back" size={16} color={COLORS.onSurfaceVariant} />
+          <ToMeIcon name="arrow_back" size={16} color={colors.onSurfaceVariant} />
           <Text style={styles.backPillText}>Back to day thread</Text>
         </TouchableOpacity>
 
         {/* Evening Header */}
         <View style={styles.header}>
           <View style={styles.timeBadge}>
-            <ToMeIcon name="bedtime" size={14} color={COLORS.secondary} />
+            <ToMeIcon name="bedtime" size={14} color={colors.secondary} />
             <Text style={styles.timeBadgeText}>Evening Check-in · 9:30 PM</Text>
           </View>
           <Text style={styles.headerTitle}>Before today ends…</Text>
@@ -128,7 +131,7 @@ export const EveningCheckinScreen: React.FC<EveningCheckinScreenProps> = ({
               value={reflectionText}
               onChangeText={setReflectionText}
               placeholder="A word, a sentence, or a whisper to the person you’ll be when this opens…"
-              placeholderTextColor={COLORS.outline}
+              placeholderTextColor={colors.outline}
               multiline
               numberOfLines={4}
               style={styles.textarea}
@@ -137,7 +140,7 @@ export const EveningCheckinScreen: React.FC<EveningCheckinScreenProps> = ({
 
           {whisperAdded && (
             <View style={styles.whisperBanner}>
-              <ToMeIcon name="mic" size={14} color={COLORS.secondary} />
+              <ToMeIcon name="mic" size={14} color={colors.secondary} />
               <Text style={styles.whisperText}>Whispered voice memo attached</Text>
             </View>
           )}
@@ -147,14 +150,14 @@ export const EveningCheckinScreen: React.FC<EveningCheckinScreenProps> = ({
               onPress={() => setWhisperAdded(!whisperAdded)}
               style={styles.actionPill}
             >
-              <ToMeIcon name="mic" size={14} color={COLORS.secondary} />
+              <ToMeIcon name="mic" size={14} color={colors.secondary} />
               <Text style={styles.actionPillText}>
                 {whisperAdded ? 'Remove voice' : 'Whisper note'}
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={cycleSealPeriod} style={styles.actionPill}>
-              <ToMeIcon name="lock_clock" size={14} color={COLORS.secondary} />
+              <ToMeIcon name="lock_clock" size={14} color={colors.secondary} />
               <Text style={styles.actionPillText}>Seal for {sealOptions[sealPeriodIndex]}</Text>
             </TouchableOpacity>
           </View>
@@ -169,7 +172,7 @@ export const EveningCheckinScreen: React.FC<EveningCheckinScreenProps> = ({
             <ToMeIcon
               name={isSaved ? 'check_circle' : 'lock'}
               size={18}
-              color={COLORS.onPrimary}
+              color={colors.onPrimary}
             />
             <Text style={styles.saveButtonText}>
               {isSaved ? 'Sealed in your vault ✨' : 'Save reflection'}
@@ -183,7 +186,7 @@ export const EveningCheckinScreen: React.FC<EveningCheckinScreenProps> = ({
 
         {/* Peaceful Footer Reassurance */}
         <View style={styles.footerReassurance}>
-          <ToMeIcon name="spa" size={18} color={COLORS.outline} />
+          <ToMeIcon name="spa" size={18} color={colors.outline} />
           <Text style={styles.footerText}>
             Rest well. Tomorrow will greet you softly.
           </Text>
@@ -193,10 +196,11 @@ export const EveningCheckinScreen: React.FC<EveningCheckinScreenProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
   },
   scrollContent: {
     paddingHorizontal: SPACING.md,
@@ -207,7 +211,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    backgroundColor: COLORS.surfaceContainer,
+    backgroundColor: colors.surfaceContainer,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: RADIUS.full,
@@ -216,7 +220,7 @@ const styles = StyleSheet.create({
   },
   backPillText: {
     fontSize: 12,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     fontWeight: '500',
   },
   header: {
@@ -237,29 +241,29 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 0.5,
-    color: COLORS.secondary,
+    color: colors.secondary,
     textTransform: 'uppercase',
   },
   headerTitle: {
     fontSize: 26,
     fontFamily: 'Literata',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     fontWeight: '600',
   },
   headerSubtitle: {
     fontSize: 14,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     textAlign: 'center',
     marginTop: 4,
     paddingHorizontal: SPACING.sm,
   },
   card: {
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     borderRadius: RADIUS.xl,
     padding: SPACING.md,
     marginBottom: SPACING.md,
     borderWidth: 1,
-    borderColor: 'rgba(229, 226, 220, 0.8)',
+    borderColor: colors.surfaceContainerHighest,
     shadowColor: '#463228',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.04,
@@ -275,22 +279,22 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 1,
-    color: COLORS.secondary,
+    color: colors.secondary,
   },
   momentsCountBadge: {
-    backgroundColor: COLORS.surfaceContainer,
+    backgroundColor: colors.surfaceContainer,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: RADIUS.full,
   },
   momentsCountText: {
     fontSize: 11,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
   },
   reviewSummary: {
     fontSize: 15,
     lineHeight: 22,
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     marginBottom: 12,
   },
   tagsContainer: {
@@ -300,14 +304,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   tag: {
-    backgroundColor: COLORS.surfaceContainer,
+    backgroundColor: colors.surfaceContainer,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: RADIUS.full,
   },
   tagText: {
     fontSize: 12,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     fontWeight: '500',
   },
   photoFragment: {
@@ -332,33 +336,33 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: 'Literata',
     fontStyle: 'italic',
-    color: COLORS.onPrimary,
+    color: colors.onPrimary,
   },
   promptLabel: {
     fontSize: 17,
     fontFamily: 'Literata',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     lineHeight: 24,
     marginBottom: 12,
   },
   textareaContainer: {
-    backgroundColor: COLORS.surfaceContainerLow,
+    backgroundColor: colors.surfaceContainerLow,
     borderRadius: RADIUS.lg,
     padding: SPACING.sm,
     borderWidth: 1,
-    borderColor: COLORS.surfaceContainerHighest,
+    borderColor: colors.surfaceContainerHighest,
     marginBottom: 12,
   },
   textarea: {
     fontSize: 15,
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     minHeight: 90,
     textAlignVertical: 'top',
   },
   whisperBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.secondaryFixed,
+    backgroundColor: colors.secondaryFixed,
     padding: 8,
     borderRadius: RADIUS.sm,
     gap: 6,
@@ -367,7 +371,7 @@ const styles = StyleSheet.create({
   whisperText: {
     fontSize: 12,
     fontWeight: '600',
-    color: COLORS.onSecondaryFixedVariant,
+    color: colors.onSecondaryFixedVariant,
   },
   canvasActions: {
     flexDirection: 'row',
@@ -378,25 +382,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: COLORS.surfaceContainer,
+    backgroundColor: colors.surfaceContainer,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: RADIUS.full,
   },
   actionPillText: {
     fontSize: 12,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     fontWeight: '500',
   },
   saveButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.secondary,
+    backgroundColor: colors.secondary,
     paddingVertical: 14,
     borderRadius: RADIUS.full,
     gap: 6,
-    shadowColor: COLORS.secondary,
+    shadowColor: colors.secondary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
@@ -407,7 +411,7 @@ const styles = StyleSheet.create({
   saveButtonText: {
     fontSize: 15,
     fontWeight: '600',
-    color: COLORS.onSecondary,
+    color: colors.onSecondary,
   },
   skipButton: {
     alignItems: 'center',
@@ -415,7 +419,7 @@ const styles = StyleSheet.create({
   },
   skipButtonText: {
     fontSize: 13,
-    color: COLORS.outline,
+    color: colors.outline,
   },
   footerReassurance: {
     alignItems: 'center',
@@ -424,8 +428,8 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 13,
-    color: COLORS.outline,
+    color: colors.outline,
     fontFamily: 'Literata',
     fontStyle: 'italic',
   },
-});
+  });

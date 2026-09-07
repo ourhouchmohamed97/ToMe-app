@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { COLORS, SPACING, RADIUS } from '../styles/theme';
+import { SPACING, RADIUS, ThemeColors } from '../styles/theme';
+import { useTheme } from '../styles/ThemeContext';
 import { ToMeIcon } from '../components/ToMeIcon';
 import { ASSETS } from '../../data/mockData';
 
@@ -39,6 +40,8 @@ const FEATURES: FeatureItem[] = [
 ];
 
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin }) => {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   return (
     <View style={styles.container}>
       {/* Ambient background glows */}
@@ -75,7 +78,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin }) => {
           {FEATURES.map((feature) => (
             <View key={feature.icon} style={styles.featureCard}>
               <View style={styles.featureIconCircle}>
-                <ToMeIcon name={feature.icon} size={18} color={COLORS.secondary} />
+                <ToMeIcon name={feature.icon} size={18} color={colors.secondary} />
               </View>
               <View style={styles.featureTextBlock}>
                 <Text style={styles.featureTitle}>{feature.title}</Text>
@@ -88,12 +91,12 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin }) => {
         {/* Primary CTA */}
         <TouchableOpacity onPress={onBegin} style={styles.beginButton} activeOpacity={0.85}>
           <Text style={styles.beginButtonText}>Begin your journey</Text>
-          <ToMeIcon name="arrow_forward" size={18} color={COLORS.onSecondary} />
+          <ToMeIcon name="arrow_forward" size={18} color={colors.onSecondary} />
         </TouchableOpacity>
 
         {/* Footer Reassurance */}
         <View style={styles.footer}>
-          <ToMeIcon name="spa" size={16} color={COLORS.outline} />
+          <ToMeIcon name="spa" size={16} color={colors.outline} />
           <Text style={styles.footerText}>
             Private by design · Nothing is ever shared
           </Text>
@@ -103,10 +106,11 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onBegin }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
     position: 'relative',
     overflow: 'hidden',
   },
@@ -141,7 +145,7 @@ const styles = StyleSheet.create({
     width: 76,
     height: 76,
     borderRadius: 38,
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#463228',
@@ -149,7 +153,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 14,
     borderWidth: 1,
-    borderColor: COLORS.surfaceContainerHighest,
+    borderColor: colors.surfaceContainerHighest,
     marginBottom: 12,
   },
   logo: {
@@ -160,14 +164,14 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontFamily: 'Literata',
     fontWeight: '600',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     letterSpacing: 0.5,
   },
   brandTagline: {
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 2,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     marginTop: 4,
   },
   hero: {
@@ -178,17 +182,17 @@ const styles = StyleSheet.create({
     fontSize: 27,
     lineHeight: 36,
     fontFamily: 'Literata',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     textAlign: 'center',
   },
   heroTitleAccent: {
-    color: COLORS.secondary,
+    color: colors.secondary,
     fontStyle: 'italic',
   },
   heroSubtitle: {
     fontSize: 15,
     lineHeight: 22,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
     textAlign: 'center',
     marginTop: SPACING.sm,
     paddingHorizontal: SPACING.xs,
@@ -200,7 +204,7 @@ const styles = StyleSheet.create({
   featureCard: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: COLORS.surfaceContainerLowest,
+    backgroundColor: colors.surfaceContainerLowest,
     borderRadius: RADIUS.lg,
     padding: SPACING.md,
     gap: SPACING.sm,
@@ -215,7 +219,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: COLORS.secondaryFixed,
+    backgroundColor: colors.secondaryFixed,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -226,23 +230,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Literata',
     fontWeight: '600',
-    color: COLORS.onSurface,
+    color: colors.onSurface,
     marginBottom: 2,
   },
   featureSubtitle: {
     fontSize: 13,
     lineHeight: 19,
-    color: COLORS.onSurfaceVariant,
+    color: colors.onSurfaceVariant,
   },
   beginButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.secondary,
+    backgroundColor: colors.secondary,
     paddingVertical: 15,
     borderRadius: RADIUS.full,
     gap: 8,
-    shadowColor: COLORS.secondary,
+    shadowColor: colors.secondary,
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.25,
     shadowRadius: 12,
@@ -250,7 +254,7 @@ const styles = StyleSheet.create({
   beginButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.onSecondary,
+    color: colors.onSecondary,
   },
   footer: {
     alignItems: 'center',
@@ -259,8 +263,8 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 12,
-    color: COLORS.outline,
+    color: colors.outline,
     fontFamily: 'Literata',
     fontStyle: 'italic',
   },
-});
+  });
